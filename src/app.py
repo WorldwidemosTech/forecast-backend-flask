@@ -1,10 +1,10 @@
 from flask import Flask
 
 # load modules
-from routes.user import user_bp
-from routes.property import property_bp
-from routes.information import information_bp
-from routes.scenario import scenario_bp
+from src.routes.user import user_bp
+from src.routes.property import property_bp
+from src.routes.information import information_bp
+from src.routes.scenario import scenario_bp
 
 # init Flask app
 app = Flask(__name__)
