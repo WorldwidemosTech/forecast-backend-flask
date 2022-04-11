@@ -12,7 +12,7 @@ def get_property(user_id: str, property_id: str):
 
 
 @property_bp.route('/property', methods=['GET'])
-def get_properties(user_id: str):
+def get_property_list(user_id: str):
     """Gets a list of properties general data associated to user."""
     print("UserId: ", user_id)
     return {"success": True, "message": "property_list"}
