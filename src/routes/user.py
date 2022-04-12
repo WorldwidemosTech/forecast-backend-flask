@@ -1,5 +1,5 @@
 from flask import Blueprint
-from src.config.logger import logger
+from config.logger import logger
 
 user_bp = Blueprint(name="user", import_name=__name__)
 
