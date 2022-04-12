@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from src.config.logger import logger
 
 information_bp = Blueprint(name="information", import_name=__name__)
 
@@ -14,6 +15,7 @@ def get_information(user_id: str, property_id: str):
 @information_bp.route('/information', methods=['POST'])
 def create_information(user_id: str):
     """Creates a property information."""
+    logger.info("UserId: %s", user_id)
     print("UserId: ", user_id)
     data = request.json
     return {"success": True, "message": "information_data"}
