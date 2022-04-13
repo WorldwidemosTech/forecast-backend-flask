@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "user",
+  "type": "object",
+  "description": "User schema",
+  "required": [
+    "user_id",
+    "user_origin",
+    "user_email"
+  ],
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "title": "User ID",
+      "description": "User ID created from Firebase or API"
+    },
+    "user_origin": {
+      "type": "string",
+      "title": "User origin",
+      "description": "Origin of user, can be external or internal",
+      "enum": [
+          "internal",
+          "external"
+        ]
+    },
+    "user_email": {
+      "type": "string",
+      "format": "email",
+      "title": "User e-mail",
+      "description": "User e-mail registered in Firebase or API"
+    }
+  },
+  "additionalProperties": false
+}
