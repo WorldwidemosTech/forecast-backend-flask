@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "property_data",
+  "type": "object",
+  "description": "Property Data schema",
+  "required": [
+    "name",
+    "address"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Property name",
+      "description": "Property name"
+    },
+    "address": {
+      "type": "string",
+      "title": "Property address",
+      "description": "Property address"
+    },
+    "units": {
+      "type": "integer",
+      "title": "Property units",
+      "description": "Total Property Units"
+    },
+    "contact": {
+      "type": "object",
+      "title": "Contact details",
+      "description": "Property contact details",
+      "minProperties": 1,
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
