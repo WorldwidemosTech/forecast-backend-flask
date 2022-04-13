@@ -12,14 +12,13 @@ def get_information(user_id: str, property_id: str):
     try:
         logger.info(f"UserId: {user_id}")
         logger.info(f"PropertyId: {property_id}")
-        data = property_information.find({'property_id': property_id,
+        data = property_information.find_one({'property_id': property_id,
                                     'user_id': user_id})
-        list_of_items = []
-        for item in data:
-            item["_id"] = str(item["_id"])
-            list_of_items.append(item)
+       
+        data["_id"] = str(data["_id"])
+           
 
-        return {"success": True, "message": "information_data", "body": json.dumps(list_of_items)}
+        return {"success": True, "message": "information_data", "body": json.loads(data)}
 
     except Exception as e:
         logger.error(e)
