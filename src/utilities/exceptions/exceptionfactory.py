@@ -8,6 +8,8 @@ class ExceptionFactory:
         # or an instance of it
         if type(invoker) == type:
             self.inv_class = invoker.__module__
+        elif type(invoker) == str:
+            self.inv_class = invoker
         else:
             self.inv_class = type(invoker).__module__
 
@@ -85,7 +87,7 @@ class ExceptionFactory:
             self.inv_class,
             http_code=400,
             error=Error.DUPLICATE_RESOURCE,
-            description="Duplicate resource name not allowed",
+            description="Duplicate resource not allowed",
             internal_message="Multiple objects matched in DB"
         )
 

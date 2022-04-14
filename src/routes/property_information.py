@@ -1,7 +1,9 @@
+import json
+
 from flask import Blueprint, request
+
 from src.config.logger import logger
 from src.db_config import property_information
-import json
 
 information_bp = Blueprint(name="information", import_name=__name__)
 
@@ -18,7 +20,6 @@ def get_information(user_id: str, property_id: str):
         data["_id"] = str(data["_id"])
 
         return {"success": True, "message": "information_data", "body": json.loads(data)}
-
     except Exception as e:
         logger.error(e)
         return {"success": False, "message": "Error getting information data"}
@@ -28,13 +29,11 @@ def get_information(user_id: str, property_id: str):
 def create_information(user_id: str):
     """Creates a property information."""
     try:
-
         logger.info(f"UserId: {user_id}")
         data = request.json
         data["user_id"] = user_id
         property_information.insert_one(data)
         return {"success": True, "message": "information_data"}
-
     except Exception as e:
         logger.error(f"Error: {e}")
         return {"success": False, "message": "information_data"}

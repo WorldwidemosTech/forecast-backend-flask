@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from src.config.logger import logger
+
 from src.utilities.schemahandler import SchemaHandler
 
 property_bp = Blueprint(name="property", import_name=__name__)

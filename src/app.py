@@ -1,19 +1,6 @@
-from flask import Flask
+from src.utilities.create_app import create_app
 
-# load modules
-from routes.user import user_bp
-from routes.property_general_data import property_bp
-from routes.property_information import information_bp
-from routes.property_scenario import scenario_bp
-
-# init Flask app
-app = Flask(__name__)
-
-# register blueprints. ensure that all paths are versioned!
-app.register_blueprint(user_bp, url_prefix="/")
-app.register_blueprint(property_bp, url_prefix="/user/<string:user_id>")
-app.register_blueprint(information_bp, url_prefix="/user/<string:user_id>")
-app.register_blueprint(scenario_bp, url_prefix="/user/<string:user_id>")
+app = create_app(config_filename="")
 
 if __name__ == '__main__':
     app.run()
