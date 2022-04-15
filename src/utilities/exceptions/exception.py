@@ -18,6 +18,7 @@ class Error(IntEnum):
     INVALID_DICT_PARAMETER_VALUE = 14
     API_VERSION_NOT_SUPPORTED = 15
     LIMIT_EXCEEDED = 16
+    DATABASE_OPERATION_FAIL = 17
 
 
 class APIException(Exception):
