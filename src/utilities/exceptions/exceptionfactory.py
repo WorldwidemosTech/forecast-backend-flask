@@ -154,3 +154,11 @@ class ExceptionFactory:
             field=field,
             failed_field_value=failed_field_value
         )
+
+    def database_operation_failed(self) -> APIException:
+        return APIException(
+            self.inv_class,
+            http_code=500,
+            error=Error.DATABASE_OPERATION_FAIL,
+            description="Database operation failed",
+        )

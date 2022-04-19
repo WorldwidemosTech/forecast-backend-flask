@@ -4,6 +4,8 @@ from flask import Blueprint, request
 
 from src.config.logger import logger
 from src.db_config import property_information
+from src.utilities.respond import success
+from src.utilities.exceptions.exceptionfactory import ExceptionFactory
 
 information_bp = Blueprint(name="information", import_name=__name__)
 
@@ -28,15 +30,12 @@ def get_information(user_id: str, property_id: str):
 @information_bp.route('/information', methods=['POST'])
 def create_information(user_id: str):
     """Creates a property information."""
-    try:
-        logger.info(f"UserId: {user_id}")
-        data = request.json
-        data["user_id"] = user_id
-        property_information.insert_one(data)
-        return {"success": True, "message": "information_data"}
-    except Exception as e:
-        logger.error(f"Error: {e}")
-        return {"success": False, "message": "information_data"}
+    data = request.json
+    data["user_id"] = user_id
+    response = property_information.insert_one(data)
+    if not response.acknowledged:
+        raise ExceptionFactory("").database_operation_failed()
+    return success()
 
 
 @information_bp.route('/information/<string:property_id>', methods=['PUT'])
