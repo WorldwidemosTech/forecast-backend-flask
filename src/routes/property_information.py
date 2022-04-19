@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, request
 
 from src.config.logger import logger
-from src.db_config import property_information
+from src.config.database import property_information_collection
 from src.utilities.respond import success
 from src.utilities.exceptions.exceptionfactory import ExceptionFactory
 
@@ -16,8 +16,8 @@ def get_information(user_id: str, property_id: str):
     try:
         logger.info(f"UserId: {user_id}")
         logger.info(f"PropertyId: {property_id}")
-        data = property_information.find_one({'property_id': property_id,
-                                              'user_id': user_id})
+        data = property_information_collection.find_one({'property_id': property_id,
+                                                         'user_id': user_id})
 
         data["_id"] = str(data["_id"])
 
@@ -32,7 +32,7 @@ def create_information(user_id: str):
     """Creates a property information."""
     data = request.json
     data["user_id"] = user_id
-    response = property_information.insert_one(data)
+    response = property_information_collection.insert_one(data)
     if not response.acknowledged:
         raise ExceptionFactory("").database_operation_failed()
     return success()
@@ -46,8 +46,8 @@ def update_information(user_id: str, property_id: str):
     try:
         data = request.json
         logger.info(f"Payload: {data}")
-        property_information.update_one({'user_id': user_id,
-                                         'property_id': property_id}, {'$set': data})
+        property_information_collection.update_one({'user_id': user_id,
+                                                    'property_id': property_id}, {'$set': data})
         return {"success": True, "message": "information_data"}
 
     except Exception as e:
@@ -61,8 +61,8 @@ def delete_information(user_id: str, property_id: str):
     logger.info(f"UserId: {user_id}")
     logger.info(f"PropertyId: {property_id}")
     try:
-        property_information.delete_one({'user_id': user_id,
-                                         'property_id': property_id})
+        property_information_collection.delete_one({'user_id': user_id,
+                                                    'property_id': property_id})
         return {"success": True, "message": "information_data"}
     except Exception as e:
         logger.error(f"Error: {e}")
