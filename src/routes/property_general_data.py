@@ -76,7 +76,7 @@ def update_property(user_id: str, property_id: str):
     else:
         data = request.json
         schema_handler.validate_property_data(data)
-        response = property_general_data.update_one({'user_id': user_id}, {'$set': data})
+        response = property_general_data.update_one({'user_id': user_id, 'property_id': property_id}, {'$set': data})
         logger.info(f"Response: {response}")
         return success("General data updated")
 
