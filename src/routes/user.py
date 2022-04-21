@@ -35,7 +35,10 @@ def create_user():
 def update_user(user_id: str):
     """Updates individual user data."""
     schema_handler.validate_user(request.json)
-    return success()
+    response = user_info_collection.update_one({"user_id": user_id}, {"$set": request.json})
+    if not response.acknowledged:
+        raise ExceptionFactory("").database_operation_failed()
+    return success({"modified_count": response.modified_count})
 
 
 @user_bp.route('/user/<string:user_id>', methods=['DELETE'])
@@ -44,4 +47,4 @@ def delete_user(user_id: str):
     response = user_info_collection.delete_one({"user_id": user_id})
     if not response.acknowledged:
         raise ExceptionFactory("").database_operation_failed()
-    return success()
+    return success({"deleted_count": response.deleted_count})
