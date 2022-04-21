@@ -160,5 +160,5 @@ class ExceptionFactory:
             self.inv_class,
             http_code=500,
             error=Error.DATABASE_OPERATION_FAIL,
-            description="Database operation failed",
+            description="Database operation failed, document not found",
         )
