@@ -162,3 +162,11 @@ class ExceptionFactory:
             error=Error.DATABASE_OPERATION_FAIL,
             description="Database operation failed, document not found",
         )
+
+    def documents_updated(self) -> APIException:
+        return APIException(
+            self.inv_class,
+            http_code=500,
+            error=Error.DATABASE_OPERATION_FAIL,
+            description="No documents updated",
+        )

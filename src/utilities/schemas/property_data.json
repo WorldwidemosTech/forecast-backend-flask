@@ -8,6 +8,11 @@
     "address"
   ],
   "properties": {
+    "user_id": {
+      "type": "string",
+      "title": "User ID",
+      "description": "User ID"
+    },
     "name": {
       "type": "string",
       "title": "Property name",

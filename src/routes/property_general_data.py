@@ -1,3 +1,4 @@
+import re
 from flask import Blueprint, request
 from bson.objectid import ObjectId
 from src.config.database import property_general_data_collection
@@ -5,6 +6,7 @@ from src.utilities.exceptions.exceptionfactory import ExceptionFactory
 from src.utilities.logging import get_logger
 from src.utilities.respond import success
 from src.utilities.schemahandler import SchemaHandler
+
 
 property_bp = Blueprint(name="property", import_name=__name__)
 logger = get_logger(__name__)

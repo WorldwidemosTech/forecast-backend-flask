@@ -23,7 +23,7 @@ def get_information(user_id: str, property_id: str):
                                                      'user_id': user_id})
     logger.info(f"Data: {data}")
     if data == None:
-        raise ExceptionFactory("Information not found").invalid_dict_parameter_value()
+        raise ExceptionFactory("Information not found").database_operation_failed() 
 
     data["_id"] = str(data["_id"])
     return {"success": True, "message": "information_data", "body": json.loads(json.dumps(data))}
@@ -40,6 +40,7 @@ def create_information(user_id: str):
     else:
         data = request.json
         data["user_id"] = user_id
+        schema_handler.validate_property_info(data)
         response = property_information_collection.insert_one(data)
         return success("Property information created")
 
@@ -47,33 +48,33 @@ def create_information(user_id: str):
 @information_bp.route('/information/<string:property_id>', methods=['PUT'])
 def update_information(user_id: str, property_id: str):
     """Updates individual property information."""
+
     logger.info(f"UserId: {user_id}")
     logger.info(f"PropertyId: {property_id}")
 
     data = request.json
     query = {'user_id': user_id, 'property_id': property_id}
+    response = property_information_collection.update_one(query, {'$set': data})
 
-    response = property_information_collection.find_one(query)
-    if response == None:
+    if response.modified_count < 1:
         raise ExceptionFactory("").database_operation_failed()
-    else:
-        response = property_information_collection.update_one(query, {'$set': data})
-        logger.info(f"Response: {response}")
-        return success("information data updated")
+        
+    logger.info(f"Response: {response.matched_count}")
+    return success("information data updated")
+    
 
 
 @information_bp.route('/information/<string:property_id>', methods=['DELETE'])
 def delete_information(user_id: str, property_id: str):
     """Deletes a property information."""
+    
     logger.info(f"UserId: {user_id}")
     logger.info(f"PropertyId: {property_id}")
-
-    query = {'user_id': user_id, 'property_id': property_id}
-    response = property_information_collection.find_one(query)
-
-    if response == None:
+    
+    response = property_information_collection.delete_one({'user_id': user_id,
+                                            'property_id': property_id})
+    if response.deleted_count < 1:
         raise ExceptionFactory("").database_operation_failed()
-    else:
-        property_information_collection.delete_one({'user_id': user_id,
-                                                    'property_id': property_id})
-        return success("information data deleted")
+
+    return success("information data deleted")
+        
