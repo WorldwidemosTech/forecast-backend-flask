@@ -65,7 +65,7 @@ class SchemaHandler(metaclass=Singleton):
     def validate_user(self, request_body: dict):
         return self.validate_request_body(request_body, self.user)
 
-    def validate_property_data(self, request_body: dict):
+    def validate_property_general_data(self, request_body: dict):
         return self.validate_request_body(request_body, self.property_data)
     
     def validate_property_info(self, request_body: dict):

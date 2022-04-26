@@ -54,7 +54,7 @@ def success(message='', meta_info=''):
         response = {'success': True, 'message': message, 'meta': meta_info}
     if message == '':
         del response['message']
-    response = stringify_uuids(response)
+    #  response = stringify_uuids(response)
     return Response(response=json.dumps(response, indent=4),
                     status=200,
                     headers=headers,
