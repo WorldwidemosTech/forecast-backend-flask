@@ -20,8 +20,11 @@ def handle_api_exception(e):
     return error(e.error, e.description, e.http_code, e.field, e.failed_field_value)
 
 
-def create_app(config_filename: str):
+def create_app():
     app = Flask(__name__)
+
+    # Load app error handlers
+    app.register_error_handler(APIException, handle_api_exception)
 
     # Blueprints
     app.register_blueprint(user_bp, url_prefix="/")
@@ -30,9 +33,5 @@ def create_app(config_filename: str):
     app.register_blueprint(scenario_bp, url_prefix="/user/<string:user_id>")
 
     CORS(app)
-
-    # Load app config
-    #app.config.from_pyfile(config_filename)
-    app.register_error_handler(APIException, handle_api_exception)
 
     return app
