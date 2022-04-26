@@ -12,6 +12,7 @@ class SchemaHandler(metaclass=Singleton):
     def __init__(self):
         self.user = self._load_schemas('./schemas/')["user"]
         self.property_data = self._load_schemas('./schemas/')["property_data"]
+        self.property_info = self._load_schemas('./schemas/')["property_information"]
 
     @staticmethod
     def _load_schemas(folder: str):
@@ -66,3 +67,6 @@ class SchemaHandler(metaclass=Singleton):
 
     def validate_property_data(self, request_body: dict):
         return self.validate_request_body(request_body, self.property_data)
+    
+    def validate_property_info(self, request_body: dict):
+        return self.validate_request_body(request_body, self.property_info)

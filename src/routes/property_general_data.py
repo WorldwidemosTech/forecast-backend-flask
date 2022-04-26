@@ -1,6 +1,7 @@
 import re
 from flask import Blueprint, request
 from src.config.logger import logger
+from bson.objectid import ObjectId
 import json
 from src.utilities.respond import success
 from src.utilities.exceptions.exceptionfactory import ExceptionFactory
@@ -23,7 +24,6 @@ def get_property(user_id: str, property_id: str):
     logger.info(f"Data: {response}")
     if response == None:
         raise ExceptionFactory("Information not found").invalid_dict_parameter_value()
-    response["_id"] = str(response["_id"])
     return {"success": True, "message": "information_data", "body": json.loads(json.dumps(response))}
 
 
@@ -32,20 +32,17 @@ def get_property_list(user_id: str):
     """Gets a list of properties general data associated to user."""
 
     logger.info(f"UserId: {user_id}")
-    validator = len(list(user.find({'user_id': user_id})))
     response = property_general_data.find({'user_id': user_id})
-    logger.info(f"Data: {response}")
-    
-    if validator == 0:
-        raise ExceptionFactory("").database_operation_failed()
     list_items = []
-    
     for i in response:
         i["_id"] = str(i["_id"])
         list_items.append(i)
-        logger.info(i)
+    
+    logger.info(f"List of items: {list_items}")
+    if len(list_items) < 1:
+        raise ExceptionFactory("Information not found").invalid_dict_parameter_value()
+        
     return {"success": True, "message": "List of properties", "body": json.loads(json.dumps(list_items))}
-
 
 
 @property_bp.route('/property', methods=['POST'])
@@ -69,16 +66,16 @@ def create_property(user_id: str):
 def update_property(user_id: str, property_id: str):
     """Updates individual property general data."""
    
-    response = property_general_data.find_one({'user_id': user_id, 'property_id': property_id})
-    if response == None:
-        raise ExceptionFactory("").database_operation_failed()
+    data = request.json
+    schema_handler.validate_property_data(data)
+    response = property_general_data.update_one({'user_id': user_id, '_id': ObjectId(property_id)}, {'$set': data})
+    logger.info(f"Response: {response}")
 
-    else:
-        data = request.json
-        schema_handler.validate_property_data(data)
-        response = property_general_data.update_one({'user_id': user_id, 'property_id': property_id}, {'$set': data})
-        logger.info(f"Response: {response}")
-        return success("General data updated")
+    if response.modified_count < 1:
+        raise ExceptionFactory("").documents_updated()
+
+    return success("General data updated")
+        
 
 
 @property_bp.route('/property/<string:property_id>', methods=['DELETE'])
@@ -87,12 +84,9 @@ def delete_property(user_id: str, property_id: str):
 
     logger.info(f"UserId: {user_id}")
     logger.info(f"PropertyId: {property_id}")
-    query = {'user_id': user_id, 'property_id': property_id}
-    response = property_general_data.find_one(query)
-
-    if response == None:
+    response = property_general_data.delete_one({'user_id': user_id,
+                                            '_id': ObjectId(property_id)})
+    if response.deleted_count < 1:
         raise ExceptionFactory("").database_operation_failed()
-    else:
-        property_general_data.delete_one({'user_id': user_id,
-                                            'property_id': property_id})
-        return success("information data deleted")
+        
+    return success("information data deleted")
