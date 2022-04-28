@@ -23,10 +23,10 @@ def get_information(user_id: str, property_id: str):
                                                      'user_id': user_id})
     logger.info(f"Data: {data}")
     if data == None:
-        raise ExceptionFactory("Information not found").database_operation_failed() 
+        raise ExceptionFactory("").database_operation_failed() 
 
     data["_id"] = str(data["_id"])
-    return {"success": True, "message": "information_data", "body": json.loads(json.dumps(data))}
+    return success({"body": json.loads(json.dumps(data))})
 
 
 @information_bp.route('/information', methods=['POST'])
@@ -35,14 +35,15 @@ def create_information(user_id: str):
 
     response = user_info_collection.find_one({'user_id': user_id})
     logger.info(f"Response: {response}")
+    data = request.json
+    data["user_id"] = user_id
+    schema_handler.validate_property_info(data)
+    response = property_information_collection.insert_one(data)
+    
     if response == None:
         raise ExceptionFactory("").database_operation_failed()
-    else:
-        data = request.json
-        data["user_id"] = user_id
-        schema_handler.validate_property_info(data)
-        response = property_information_collection.insert_one(data)
-        return success("Property information created")
+    
+    return success({"inserted_id": str(response.inserted_id)}) 
 
 
 @information_bp.route('/information/<string:property_id>', methods=['PUT'])
@@ -53,6 +54,7 @@ def update_information(user_id: str, property_id: str):
     logger.info(f"PropertyId: {property_id}")
 
     data = request.json
+    schema_handler.validate_property_info(data)
     query = {'user_id': user_id, 'property_id': property_id}
     response = property_information_collection.update_one(query, {'$set': data})
 
@@ -60,7 +62,7 @@ def update_information(user_id: str, property_id: str):
         raise ExceptionFactory("").database_operation_failed()
         
     logger.info(f"Response: {response.matched_count}")
-    return success("information data updated")
+    return success({"modified_count": str(response.modified_count)})
     
 
 
@@ -76,5 +78,5 @@ def delete_information(user_id: str, property_id: str):
     if response.deleted_count < 1:
         raise ExceptionFactory("").database_operation_failed()
 
-    return success("information data deleted")
+    return success({"deleted_count": str(response.deleted_count)})
         

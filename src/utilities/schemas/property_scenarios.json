@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "title": "property_information",
+    "title": "property_scenarios",
     "type": "object",
-    "description": "Property Information schema",
+    "description": "Property scenarios schema",
     "required": [
       "capital",
       "income",
@@ -18,26 +18,6 @@
             "type": "string",
             "title": "User ID",
             "description": "User ID"
-        },
-        "property_information":{
-            "type":"object",
-            "title": "Property information",
-            "description": "Property information",
-            "properties": {
-                "property_name":{"type": "string"},
-                "property_type":{"type": "string"},
-                "number_of_units":{"type": "integer"},
-                "total_sq_ft":{"type": "integer"},
-                "scheduled_rent":{"type": "integer"},
-                "actual_status":{"type": "string"},
-                "avg_unit_sq_ft":{"type": "integer"},
-                "avg_rent_per_unit":{"type": "integer"},
-                "budget_year":{"type": "integer"},
-                "date":{"type": "string"},
-                "turnover":{"type": "integer"},
-                "application_fee":{"type": "integer"},
-                "starting_vacant_units":{"type": "integer"}
-            }
         },
         "capital": {
             "type":"object",
