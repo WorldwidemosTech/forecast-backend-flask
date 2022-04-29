@@ -32,6 +32,11 @@
                 "title": "Capital subsection",
                 "minProperties": 1,
                 "description": "Capital subsection",
+                "properties": {
+                    "starting_month": {
+                        "type":"integer"
+                    }
+                },
                 "additionalProperties": {
                     "type": "number"
                     }
@@ -49,6 +54,11 @@
                 "title": "Capital subsection",
                 "minProperties": 1,
                 "description": "Capital subsection",
+                "properties": {
+                    "starting_month": {
+                        "type":"integer"
+                    }
+                },
                 "additionalProperties": {
                     "type": "number"
                     }
@@ -66,6 +76,11 @@
                 "title": "Capital subsection",
                 "minProperties": 1,
                 "description": "Capital subsection",
+                "properties": {
+                    "starting_month": {
+                        "type":"integer"
+                    }
+                },
                 "additionalProperties": {
                     "type": "number"
                     }
