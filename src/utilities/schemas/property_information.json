@@ -6,7 +6,10 @@
     "required": [
       "capital",
       "income",
-      "expense"
+      "expense",
+      "information",
+      "property_id",
+      "user_id"
     ],
     "properties": {
         "property_id": {
@@ -19,13 +22,11 @@
             "title": "User ID",
             "description": "User ID"
         },
-        "property_information":{
+        "information":{
             "type":"object",
             "title": "Property information",
             "description": "Property information",
             "properties": {
-                "property_name":{"type": "string"},
-                "property_type":{"type": "string"},
                 "number_of_units":{"type": "integer"},
                 "total_sq_ft":{"type": "integer"},
                 "scheduled_rent":{"type": "integer"},
@@ -43,48 +44,54 @@
             "type":"object",
             "title": "Capital section",
             "description": "Capital section",
+            "minProperties": 1,
             "properties": {
-                "categorie_a": {
-                    "type": "object",
-                    "title": "Capital subsection",
-                    "description": "Capital subsection",
-                    "properties": {
-                        "value": {
-                            "type": "number"
-                        }
-                        
+            "additionalProperties": {
+                "type": "object",
+                "title": "Capital subsection",
+                "minProperties": 1,
+                "description": "Capital subsection",
+                "additionalProperties": {
+                    "type": "number"
                     }
-                },
-            "additionalProperties": true
+                }
             }
         },
         "expense": {
             "type":"object",
-            "title": "Expense section",
-            "description": "Expense section",
+            "title": "Capital section",
+            "description": "Capital section",
+            "minProperties": 1,
             "properties": {
-                "categorie_a": {
-                    "type": "integer",
-                    "title": "Expense subsection",
-                    "description": "Expense subsection"
-                },
-            "additionalProperties": true
+            "additionalProperties": {
+                "type": "object",
+                "title": "Capital subsection",
+                "minProperties": 1,
+                "description": "Capital subsection",
+                "additionalProperties": {
+                    "type": "number"
+                    }
+                }
             }
         },
         "income": {
             "type":"object",
-            "title": "Income section",
-            "description": "Income section",
+            "title": "Capital section",
+            "description": "Capital section",
+            "minProperties": 1,
             "properties": {
-                "categorie_a": {
-                    "type": "integer",
-                    "title": "Income subsection",
-                    "description": "Income subsection"
-                },
-            "additionalProperties": true
+            "additionalProperties": {
+                "type": "object",
+                "title": "Capital subsection",
+                "minProperties": 1,
+                "description": "Capital subsection",
+                "additionalProperties": {
+                    "type": "number"
+                    }
+                }
             }
          },
-    "additionalProperties": true
+    "additionalProperties": false
   }
 }
   

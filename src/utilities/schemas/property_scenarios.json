@@ -1,12 +1,14 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "title": "property_scenarios",
+    "title": "property_information",
     "type": "object",
-    "description": "Property scenarios schema",
+    "description": "Property Information schema",
     "required": [
       "capital",
       "income",
-      "expense"
+      "expense",
+      "property_id",
+      "user_id"
     ],
     "properties": {
         "property_id": {
@@ -23,48 +25,54 @@
             "type":"object",
             "title": "Capital section",
             "description": "Capital section",
+            "minProperties": 1,
             "properties": {
-                "categorie_a": {
-                    "type": "object",
-                    "title": "Capital subsection",
-                    "description": "Capital subsection",
-                    "properties": {
-                        "value": {
-                            "type": "number"
-                        }
-                        
+            "additionalProperties": {
+                "type": "object",
+                "title": "Capital subsection",
+                "minProperties": 1,
+                "description": "Capital subsection",
+                "additionalProperties": {
+                    "type": "number"
                     }
-                },
-            "additionalProperties": true
+                }
             }
         },
         "expense": {
             "type":"object",
-            "title": "Expense section",
-            "description": "Expense section",
+            "title": "Capital section",
+            "description": "Capital section",
+            "minProperties": 1,
             "properties": {
-                "categorie_a": {
-                    "type": "integer",
-                    "title": "Expense subsection",
-                    "description": "Expense subsection"
-                },
-            "additionalProperties": true
+            "additionalProperties": {
+                "type": "object",
+                "title": "Capital subsection",
+                "minProperties": 1,
+                "description": "Capital subsection",
+                "additionalProperties": {
+                    "type": "number"
+                    }
+                }
             }
         },
         "income": {
             "type":"object",
-            "title": "Income section",
-            "description": "Income section",
+            "title": "Capital section",
+            "description": "Capital section",
+            "minProperties": 1,
             "properties": {
-                "categorie_a": {
-                    "type": "integer",
-                    "title": "Income subsection",
-                    "description": "Income subsection"
-                },
-            "additionalProperties": true
+            "additionalProperties": {
+                "type": "object",
+                "title": "Capital subsection",
+                "minProperties": 1,
+                "description": "Capital subsection",
+                "additionalProperties": {
+                    "type": "number"
+                    }
+                }
             }
          },
-    "additionalProperties": true
+    "additionalProperties": false
   }
 }
   
