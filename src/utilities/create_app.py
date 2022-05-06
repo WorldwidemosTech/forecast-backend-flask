@@ -6,6 +6,7 @@ from flask_cors import CORS
 from src.routes.property_general_data import property_bp
 from src.routes.property_information import information_bp
 from src.routes.property_scenario import scenario_bp
+from src.routes.property_scenario import property_forecast_bp
 from src.routes.user import user_bp
 from src.utilities.exceptions.exception import APIException
 from src.utilities.logging import get_logger
@@ -31,6 +32,7 @@ def create_app():
     app.register_blueprint(property_bp, url_prefix="/user/<string:user_id>")
     app.register_blueprint(information_bp, url_prefix="/user/<string:user_id>")
     app.register_blueprint(scenario_bp, url_prefix="/user/<string:user_id>")
+    app.register_blueprint(property_forecast_bp, url_prefix="/user/<string:user_id>")
 
     CORS(app)
 
