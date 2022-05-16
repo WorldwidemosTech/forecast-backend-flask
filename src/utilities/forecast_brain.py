@@ -110,11 +110,6 @@ class Brain():
 
 
 
-
-
-
-
-
     def forecast_expenses(self, user_id, property_id):
         document = self.property_info.find_one({"user_id":user_id, "property_id":property_id})
         document = document["expense"]
