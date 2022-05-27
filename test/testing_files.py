@@ -1,10 +1,5 @@
-occupancy_goals_precentage = 93
-occupancy_goals_list = [occupancy_goals_precentage]
-for month in range(11):
-    if occupancy_goals_precentage < 94:
-        occupancy_goals_precentage += (occupancy_goals_precentage * .01)
-    else:
-        occupancy_goals_precentage = 95
-    occupancy_goals_list.append(round(occupancy_goals_precentage,2))
+from src.config.database import property_information_collection as property_info
 
-print(occupancy_goals_list)
+document = property_info.find_one({"user_id":"dlopezvsr", "property_id":"6223cf8c40b07aaf6c4f36b1"})
+units_information = document["property_information"]
+print(units_information)

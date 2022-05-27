@@ -7,7 +7,7 @@
       "capital",
       "income",
       "expense",
-      "information",
+      "property_information",
       "property_id",
       "user_id"
     ],
@@ -22,23 +22,10 @@
             "title": "User ID",
             "description": "User ID"
         },
-        "information":{
+        "property_information":{
             "type":"object",
             "title": "Property information",
-            "description": "Property information",
-            "properties": {
-                "number_of_units":{"type": "integer"},
-                "total_sq_ft":{"type": "integer"},
-                "scheduled_rent":{"type": "integer"},
-                "actual_status":{"type": "string"},
-                "avg_unit_sq_ft":{"type": "integer"},
-                "avg_rent_per_unit":{"type": "integer"},
-                "budget_year":{"type": "integer"},
-                "date":{"type": "string"},
-                "turnover":{"type": "integer"},
-                "application_fee":{"type": "integer"},
-                "starting_vacant_units":{"type": "integer"}
-            }
+            "description": "Property information"
         },
         "capital": {
             "type":"object",
