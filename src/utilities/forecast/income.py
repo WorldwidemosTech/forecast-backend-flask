@@ -1,52 +1,35 @@
-from re import M
 from src.config.database import property_information_collection
 from src.config.database import property_forecast_collection
+from src.utilities.forecast.property_information import Property
 
-class Income():
+class Income(Property):
     
-    def __init__(self):
+    def __init__(self, user_id, property_id):
+        Property.__init__(self, user_id, property_id)
         self.property_info = property_information_collection
         self.property_forecast = property_forecast_collection
         self.income_schema = {}
+        self.income_schema_post = {"income": self.income_schema}
+
     
-    def execute(self, user_id, property_id):
-        self.units_base_info(user_id, property_id)
-        self.units_info(user_id, property_id)
-        self.unit_rents(user_id, property_id)
-        self.actual_status(user_id, property_id)
-        self.occupancy_goals(user_id, property_id)
+    def execute(self):
+        self.unit_rents()
+        self.actual_status()
+        self.occupancy_goals()
         self.loss_gain()
-        self.occupied_vacant_units(user_id, property_id)
-        self.rent_loss(user_id, property_id)
+        self.occupied_vacant_units()
+        self.rent_loss()
         self.new_leases()
-        self.application_fee(user_id, property_id)
-        self.total_rent_income(user_id, property_id)
-        self.big_total_income(user_id, property_id)
-        self.income_schema["user_id"] = user_id
-        self.income_schema["property_id"] = property_id
-        response = self.property_forecast.insert_one(self.income_schema)
-        return self.income_schema
+        self.application_fee()
+        self.total_rent_income()
+        self.big_total_income()
+        self.income_schema_post["user_id"] = self.user_id
+        self.income_schema_post["property_id"] = self.property_id
+        self.property_forecast.insert_one(self.income_schema_post)
+        return self.income_schema_post
 
-    def units_base_info(self, user_id, property_id):
-        document = self.property_info.find_one({"user_id":user_id, "property_id":property_id})
-        units_information = document["property_information"]
-        return units_information
-    
-    def units_info(self, user_id, property_id):
-        units_information = self.units_base_info(user_id, property_id)
-        total_rent = {"actual": [], "new": [], "vacant": [], "total_units":[]}
-
-        for rent in units_information["units_information"]:
-            actual = rent["amount_units"] * rent["actual_month_rent"]
-            new = rent["amount_units"] * rent["new_month_rent"]
-            total_rent["actual"].append(actual)
-            total_rent["new"].append(new)
-            total_rent["vacant"].append(rent["vacant"])
-            total_rent["total_units"].append(rent["amount_units"])
-        return total_rent
-
-    def unit_rents(self, user_id, property_id):
-        total_rent = self.units_info(user_id, property_id)
+    def unit_rents(self):
+        total_rent = Property.units_info(self)
         average_monthly_increase_grp = (sum(total_rent["new"]) - sum(total_rent["actual"]))/12
         gross_rent_potential = sum(total_rent["actual"]) + average_monthly_increase_grp
         
@@ -54,9 +37,9 @@ class Income():
         for month in range(11):
             self.income_schema["gross_rent_potential"].append(round(average_monthly_increase_grp + self.income_schema["gross_rent_potential"][month]))
         
-    def actual_status(self, user_id, property_id):
-        units_information = self.units_base_info(user_id, property_id)
-        total_rent = self.units_info(user_id, property_id)
+    def actual_status(self):
+        units_information = Property.units_base_info(self)
+        total_rent = Property.units_info(self)
         amount_units = sum(total_rent["total_units"])
         turnover = units_information["turnover"]
         monthly_moveouts = round(amount_units * turnover/12)
@@ -79,10 +62,10 @@ class Income():
 
         return amount_units
 
-    def occupancy_goals(self, user_id, property_id):
+    def occupancy_goals(self):
         
-        amount_units = self.actual_status(user_id, property_id)
-        total_rent = self.units_info(user_id, property_id)
+        amount_units = self.actual_status()
+        total_rent = Property.units_info(self)
         occupancy_goals_precentage = ((amount_units - sum(total_rent["vacant"]))/amount_units)*100
 
         self.income_schema["occupancy_goals_list"] = [round(occupancy_goals_precentage)]
@@ -101,8 +84,8 @@ class Income():
             loss_gain_lease = self.income_schema["actual_status_timeseries_list"][month] - self.income_schema["gross_rent_potential"][month]
             self.income_schema["loss_gain_lease_list"].append(loss_gain_lease)
 
-    def occupied_vacant_units(self, user_id, property_id):
-        amount_units = self.actual_status(user_id, property_id)
+    def occupied_vacant_units(self):
+        amount_units = self.actual_status()
         self.income_schema["occuppied_units_list"]  = []
         self.income_schema["vacant_units_list"] = []
         for month in range(12):
@@ -110,8 +93,8 @@ class Income():
             self.income_schema["occuppied_units_list"].append(round(occupied_units))
             self.income_schema["vacant_units_list"].append(round(amount_units - occupied_units))
     
-    def rent_loss(self,user_id, property_id):
-        units_information = self.units_base_info(user_id, property_id)
+    def rent_loss(self):
+        units_information = Property.units_base_info(self)
         self.income_schema["vacancy_loss_list"] = []
         self.income_schema["concessions_list"] = []
         self.income_schema["write_offs_list"] = []
@@ -130,17 +113,16 @@ class Income():
             new_lease = self.income_schema["vacant_units_list"][month] + self.income_schema["monthly_moveouts"][0] - self.income_schema["vacant_units_list"][month+1]
             self.income_schema["new_leases"].append(new_lease)
  
-    def application_fee(self, user_id, property_id):
-        units_information = self.units_base_info(user_id, property_id)
+    def application_fee(self):
+        units_information = Property.units_base_info(self)
         self.income_schema["application_fees"] = []
         self.income_schema["new_leases"]
 
         for month in range(12):
             self.income_schema["application_fees"].append(self.income_schema["new_leases"][month]*2*units_information["application_fee"])
 
-    def total_rent_income(self, user_id, property_id):
+    def total_rent_income(self):
         self.income_schema["total_rental_income"] = []
-        units_information = self.units_base_info(user_id, property_id)
         for month in range(12):
             value_1 = self.income_schema["actual_status_timeseries_list"][month]
             value_2 = self.income_schema["vacancy_loss_list"][month]
@@ -149,8 +131,8 @@ class Income():
             total_sum = (value_1 + value_2 + value_3 + value_4)
             self.income_schema["total_rental_income"].append(total_sum)
     
-    def big_total_income(self, user_id, property_id):
-        document = self.property_info.find_one({"user_id":user_id, "property_id":property_id})
+    def big_total_income(self):
+        document = self.property_info.find_one({"user_id":self.user_id, "property_id":self.property_id})
         self.income_schema["big_total_income"] = []
         income_document = document["income"].values()
         income_entered_by_user = sum([i for i in income_document ])
@@ -163,8 +145,8 @@ class Income():
         
 
 def main():
-    income = Income()
-    print(income.execute("dlopezvsr", "6223cf8c40b07aaf6c4f36b1"))
+    income = Income("dlopezvsr", "6223cf8c40b07aaf6c4f36b1")
+    print(income.execute())
 
 if __name__ == "__main__":
     main()
