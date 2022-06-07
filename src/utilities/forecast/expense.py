@@ -1,3 +1,4 @@
+from re import U
 from src.config.database import property_information_collection
 from src.config.database import  property_forecast_collection
 from src.utilities.forecast.property_information import Property
@@ -12,12 +13,14 @@ class Expense(Property):
         self.expense_schema_post = {"expense": self.expense_schema}
     
     def execute(self):
+        # TODO: Add to the end
         """self.property_forecast.update_one({"property_id": self.property_id,
                                             "user_id":self.user_id},
                                             {"$push":self.expense_schema_post})"""
         self.income_output_info()
         self.management_fee()
         self.advertising()
+        self.misc_management_expense()
         return  self.expense_schema_post
     
     def income_output_info(self):
@@ -37,7 +40,30 @@ class Expense(Property):
         expense_inputs = Property.expense_input_info(self)
         units = Property.units_info(self)
         self.expense_schema["advertising"] = [sum(units["total_units"]) * expense_inputs["marketing_fee_per_unit"]]
+    
+    def misc_management_expense(self):
+        units = sum(Property.units_info(self)["total_units"])
+        expense_inputs = Property.expense_input_info(self)
+        self.expense_schema["office_supplies_per_unit"] = expense_inputs["office_supplies_per_unit"] * units
+        self.expense_schema["accounting_software_suscriptions_per_unit"] = expense_inputs["accounting_software_suscriptions_per_unit"] * units
+        self.expense_schema["telephone"] = expense_inputs["telephone"]
+        self.expense_schema["website_maintenance"] = expense_inputs["website_maintenance"]
+        self.expense_schema["banking"] = expense_inputs["banking"] 
+        self.expense_schema["legal_and_accounting"] = expense_inputs["legal_and_accounting"]
+        self.expense_schema["internet_computers"] = expense_inputs["internet_computers"]
+        self.expense_schema["miscellaneous_management_fees_per_unit"] = expense_inputs["miscellaneous_management_fees_per_unit"] * units
+    
+    def employee_expense(self):
+        expense_inputs = Property.expense_input_info(self)
+        employee_info = {"employees_salary":[], "total_employees":[]}
         
+        for employees in expense_inputs["employee_expense"]:
+            employee_info["employees_salary"].append(employees["hourly_rate"] * employees["monthly_hours"] * employees["number_eployees"])
+            employee_info["total_employees"].append()
+
+
+    
+
 
 
         

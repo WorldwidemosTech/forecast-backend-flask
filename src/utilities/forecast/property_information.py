@@ -32,3 +32,5 @@ class Property():
         document = self.property_info.find_one({"user_id":self.user_id, "property_id":self.property_id})
         property_expense_information = document["expense"]
         return property_expense_information
+
+        
