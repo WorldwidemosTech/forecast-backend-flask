@@ -1,4 +1,3 @@
-import re
 from flask import Blueprint, request
 from bson.objectid import ObjectId
 from src.config.database import property_general_data_collection

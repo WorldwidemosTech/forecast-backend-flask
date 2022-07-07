@@ -1,13 +1,12 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "title": "property_information",
+    "title": "property_scenarios",
     "type": "object",
     "description": "Property Information schema",
     "required": [
       "capital",
       "income",
       "expense",
-      "property_information",
       "property_id",
       "user_id"
     ],
@@ -22,11 +21,6 @@
             "title": "User ID",
             "description": "User ID"
         },
-        "property_information":{
-            "type":"object",
-            "title": "Property information",
-            "description": "Property information"
-        },
         "capital": {
             "type":"object",
             "title": "Capital section",
@@ -38,6 +32,11 @@
                 "title": "Capital subsection",
                 "minProperties": 1,
                 "description": "Capital subsection",
+                "properties": {
+                    "starting_month": {
+                        "type":"integer"
+                    }
+                },
                 "additionalProperties": {
                     "type": "number"
                     }
@@ -55,6 +54,11 @@
                 "title": "Capital subsection",
                 "minProperties": 1,
                 "description": "Capital subsection",
+                "properties": {
+                    "starting_month": {
+                        "type":"integer"
+                    }
+                },
                 "additionalProperties": {
                     "type": "number"
                     }
@@ -72,6 +76,11 @@
                 "title": "Capital subsection",
                 "minProperties": 1,
                 "description": "Capital subsection",
+                "properties": {
+                    "starting_month": {
+                        "type":"integer"
+                    }
+                },
                 "additionalProperties": {
                     "type": "number"
                     }

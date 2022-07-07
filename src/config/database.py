@@ -13,4 +13,5 @@ user_info_collection = mongo[mongo_database].user_info
 property_general_data_collection = mongo[mongo_database].property_general_data
 property_information_collection = mongo[mongo_database].property_information
 property_scenarios_collection = mongo[mongo_database].property_scenarios
+property_forecast_collection = mongo[mongo_database].property_forecast
 
