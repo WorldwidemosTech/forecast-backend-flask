@@ -2,6 +2,8 @@ from src.config.database import property_information_collection
 from src.config.database import  property_forecast_collection
 
 class Property():
+     #information entered by user in property information initial payload from section called general data in the frontend
+     #but in the json payload it is called property information as well, it means the name is repeated (just to avoid confusion).
     
     def __init__(self, user_id, property_id):
         self.property_info = property_information_collection
@@ -10,6 +12,7 @@ class Property():
         self.property_id = property_id
 
     def units_base_info(self):
+        #information enter by user in property information initial payload from section called units information.
         document = self.property_info.find_one({"user_id":self.user_id, "property_id":self.property_id})
         units_information = document["property_information"]
         return units_information
@@ -28,7 +31,7 @@ class Property():
         return total_rent
 
     def expense_input_info(self):
-        #Information entered by user in property information section
+        #information entered by user in property information initial payload from expense section.
         document = self.property_info.find_one({"user_id":self.user_id, "property_id":self.property_id})
         property_expense_information = document["expense"]
         return property_expense_information
