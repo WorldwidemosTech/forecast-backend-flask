@@ -17,5 +17,12 @@ for income_concepts in document["income"]:
 for item in utility_expenses:
     print(utility_expenses[item])
 """
+import numpy as np
+import pandas as pd
 
-print(sum([1,2,3,4,5]))
+list_of_utilities = np.array([[2,3,4]])
+listo = np.array([[1,2,3]])
+
+
+print(np.subtract(listo, list_of_utilities))
+

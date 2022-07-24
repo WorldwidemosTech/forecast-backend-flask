@@ -19,16 +19,19 @@ class Property():
     
     def units_info(self):
         units_information = self.units_base_info()
-        total_rent = {"actual": [], "new": [], "vacant": [], "total_units":[]}
+        units_information_totals = {"actual_rent": [], "new_rent": [], "vacant_units": [], "total_units":[], "total_sqft":[]}
 
-        for rent in units_information["units_information"]:
-            actual = rent["amount_units"] * rent["actual_month_rent"]
-            new = rent["amount_units"] * rent["new_month_rent"]
-            total_rent["actual"].append(actual)
-            total_rent["new"].append(new)
-            total_rent["vacant"].append(rent["vacant"])
-            total_rent["total_units"].append(rent["amount_units"])
-        return total_rent
+        for units_information_concept in units_information["units_information"]:
+            actual = units_information_concept["amount_units"] * units_information_concept["actual_month_rent"]
+            new = units_information_concept["amount_units"] * units_information_concept["new_month_rent"]
+            size = units_information_concept["amount_units"] * units_information_concept["size"]
+
+            units_information_totals["total_sqft"].append(size)
+            units_information_totals["actual"].append(actual)
+            units_information_totals["new"].append(new)
+            units_information_totals["vacant"].append(units_information_concept["vacant"])
+            units_information_totals["total_units"].append(units_information_concept["amount_units"])
+        return units_information_totals
 
     def expense_input_info(self):
         #information entered by user in property information initial payload from expense section.
@@ -36,4 +39,8 @@ class Property():
         property_expense_information = document["expense"]
         return property_expense_information
 
-        
+    def capital_input_info(self):
+        #information entered by user in property information initial payload from capital section.
+        document = self.property_info.find_one({"user_id":self.user_id, "property_id":self.property_id})
+        property_capital_information = document["capital"]
+        return property_capital_information
