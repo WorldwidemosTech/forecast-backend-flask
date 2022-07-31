@@ -11,14 +11,13 @@ class Expense(Property):
         self.property_info = property_information_collection
         self.property_forecast = property_forecast_collection
         self.expense_schema = {}
-        self.capital_schema = {}
-        self.schema_post = {"expense": self.expense_schema, "capital:": self.capital_schema}
+        self.expense_schema_post = {"expense": self.expense_schema}
     
     def execute(self):
         # TODO: Add to the end
         """self.property_forecast.update_one({"property_id": self.property_id,
                                             "user_id":self.user_id},
-                                            {"$push":self.schema_post})"""
+                                            {"$push":self.expense_schema_post})"""
         self.income_output_info()
         self.management_fee()
         self.advertising()
@@ -30,6 +29,12 @@ class Expense(Property):
         document = self.property_forecast.find_one({"user_id":self.user_id, "property_id":self.property_id})
         income_info = document["income"]
         return income_info
+
+    def capital_output_info(self):
+        #Information calculated on capital module needed to calculate expense concepts
+        document = self.property_forecast.find_one({"user_id":self.user_id, "property_id":self.property_id})
+        capital_info = document["capital"]
+        return capital_info
 
     def management_fee(self):
         #time series type value
@@ -57,6 +62,27 @@ class Expense(Property):
         self.expense_schema["management_expenses"]["internet_computers"] = [expense_inputs["internet_computers"]]
         self.expense_schema["management_expenses"]["total_miscellaneous_management_fees"] = [expense_inputs["miscellaneous_management_fees_per_unit"] * units]
     
+    def total_management_expense(self):
+        management_expenses = []
+        #there are some values that are the same each month that need to be added to the ones that vary each month
+        for management_expense_json_key in self.expense_schema["management_expenses"]:
+            time_series_concept = self.expense_schema["management_expenses"][management_expense_json_key]
+            
+            if len(time_series_concept) == 1:
+                for value in range(11):
+                    self.expense_schema["management_expenses"][management_expense_json_key].append(time_series_concept[0])
+                management_expenses.append(self.expense_schema["management_expenses"][management_expense_json_key])
+            else:
+                management_expenses.append(time_series_concept)
+        #the variable below is first converting a list of lists into an array, afer that we are summing all the values column by column and...
+        #finally retrieving the total values of the array summed month by month converted into a list.
+        sum_management_expenses_time_series = np.ndarray.tolist(
+            np.sum(np.array(
+                management_expenses), axis=0))
+
+        self.expense_schema["total_management_expenses"] = sum_management_expenses_time_series
+
+
     def employee_expense(self):
         expense_inputs = Property.expense_input_info(self)
         employee_info = {"employees_salary":[], "total_employees":[]}
@@ -96,15 +122,16 @@ class Expense(Property):
         list_of_utilities = []
         for item in utility_expenses:
             list_of_utilities.append(utility_expenses[item])
-
+        
         list_of_utilities_sum = [sum(list_of_utilities)]
+        self.expense_schema["total_utility_expenses"] = list_of_utilities_sum
         return list_of_utilities_sum
     
     def maintenance_expense(self):
         # Create a function to calculate the maintenance expense once we divide it by different concepts, in the meantime
-        # we will just ask the user for one big total 
-        
-       pass
+        # we will just ask the user for one big total
+        maintenance_expenses =  [Property.expense_input_info(self)["maintenance_expense"]] 
+        self.expense_schema["total_maintenance_expenses"] = maintenance_expenses
 
     def convert_to_time_series(self):
         #Convert a single item list to a time series list with the same value for each month to facilitate the calculations
@@ -113,22 +140,7 @@ class Expense(Property):
 
     def total_operating_expenses(self):
   
-        management_expenses = []
-        #there are some values that are the same each month so 
-        for management_expense_json_key in self.expense_schema["management_expenses"]:
-            time_series_concept = self.expense_schema["management_expenses"][management_expense_json_key]
-            
-            if len(time_series_concept) == 1:
-                for value in range(11):
-                    self.expense_schema["management_expenses"][management_expense_json_key].append(time_series_concept[0])
-                management_expenses.append(self.expense_schema["management_expenses"][management_expense_json_key])
-            else:
-                management_expenses.append(time_series_concept)
-        #the variable below is first converting a list of lists into an array, afer that we are summing all the values column by column and...
-        #finally retrieving the total values of the array summed month by month converted into a list.
-        sum_management_expenses_time_series = np.ndarray.tolist(
-            np.sum(np.array(
-                management_expenses), axis=0))
+        management_expense = self.expense_schema["total_management_expenses"]
         utility_expenses = self.utility_expense()
         employee_expenses = self.expense_schema["employees_salary_expense"]
         #maintenance expense is a value entered by the user as a total value, in the 2.0 version we can breakdown the concepts
@@ -137,7 +149,7 @@ class Expense(Property):
         
         self.expense_schema["total_operating_expenses"] = []
         for month in range(12):
-            self.expense_schema["total_operating_expenses"].append(sum_management_expenses_time_series[month] + utility_expenses[0] + employee_expenses[0] + maintenance_expenses[0] + fixed_expenses[0])
+            self.expense_schema["total_operating_expenses"].append(management_expense[month] + utility_expenses[0] + employee_expenses[0] + maintenance_expenses[0] + fixed_expenses[0])
 
     def net_operating_income_pre_capital(self):
         # JSON retrived from database in order to get the value of total income preciously calculated in income class
@@ -148,18 +160,14 @@ class Expense(Property):
 
         self.expense_schema["net_operating_income_pre_capital"] = np.ndarray.tolist(np.subtract(total_income_array, total_operating_expenses_array))
 
-    def capital_expenditures(self):
-        capital_expenditures = Property.capital_input_info(self)
-        monthly_capital_expenditures = [capital_expenditures["total_year_amount"] / 12]
-        for i in range(11):
-            monthly_capital_expenditures.append(monthly_capital_expenditures[0])
-
-        self.capital_schema["capital_expenditures"] = monthly_capital_expenditures
-
     def net_cash_flow(self):
-        net_operating_array = np.array([self.expense_schema["net_operating_income_pre_capital"]])
+        capital_expenses = self.capital_output_info()["capital_expenditures"]
+        net_operating_array = np.array([capital_expenses])
         capital_expenditures_array = np.array([self.capital_schema["capital_expenditures"]])
         self.expense_schema["net_cash_flow"] = np.ndarray.tolist(np.subtract(net_operating_array, capital_expenditures_array))
+    
+    
+
 
 def main():
     expense = Expense("dlopezvsr", "6223cf8c40b07aaf6c4f36b1")
