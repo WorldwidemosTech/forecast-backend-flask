@@ -29,3 +29,11 @@ class Capital(Property):
             monthly_capital_expenditures.append(monthly_capital_expenditures[0])
 
         self.capital_schema["capital_expenditures"] = monthly_capital_expenditures
+
+
+def main():
+    capital = Capital("dlopezvsr", "6223cf8c40b07aaf6c4f36b1")
+    print(capital.execute())
+
+if __name__ == "__main__":
+    main()

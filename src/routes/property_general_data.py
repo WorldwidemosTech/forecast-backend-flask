@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from bson.objectid import ObjectId
-from src.config.database import property_general_data_collection
+from src.config.database import property_general_data_collection, property_information_collection
 from src.utilities.exceptions.exceptionfactory import ExceptionFactory
 from src.utilities.logging import get_logger
 from src.utilities.respond import success
@@ -52,7 +52,11 @@ def create_property(user_id: str):
     data["user_id"] = user_id
 
     response = property_general_data_collection.insert_one(data)
-    if not response.acknowledged:
+    response_forecast_document = property_information_collection.insert_one({
+        "property_id": response.inserted_id, 
+        "user_id": user_id})
+
+    if not response.acknowledged and not response_forecast_document.acknowledged:
         raise ExceptionFactory("").database_operation_failed()
     return success({"inserted_id": str(response.inserted_id)})
 

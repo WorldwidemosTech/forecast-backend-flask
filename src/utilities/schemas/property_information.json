@@ -4,12 +4,12 @@
     "type": "object",
     "description": "Property Information schema",
     "required": [
-      "capital",
-      "income",
-      "expense",
-      "property_information",
-      "property_id",
-      "user_id"
+        "property_id",
+        "user_id",
+        "property_information",
+        "income",
+        "expense",
+        "capital"
     ],
     "properties": {
         "property_id": {

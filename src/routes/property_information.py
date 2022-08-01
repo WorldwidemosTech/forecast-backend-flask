@@ -1,7 +1,7 @@
 import json
 
 from flask import Blueprint, request
-
+from bson import ObjectId
 from src.config.logger import logger
 from src.config.database import property_information_collection
 from src.config.database import user_info_collection
@@ -29,21 +29,23 @@ def get_information(user_id: str, property_id: str):
     return success({"body": json.loads(json.dumps(data))})
 
 
-@information_bp.route('/information', methods=['POST'])
-def create_information(user_id: str):
+@information_bp.route('/information/<string:property_id>', methods=['POST'])
+def create_information(user_id: str, property_id: str):
     """Creates a property information."""
 
     response = user_info_collection.find_one({'user_id': user_id})
     logger.info(f"Response: {response}")
     data = request.json
-    data["user_id"] = user_id
-    schema_handler.validate_property_info(data)
-    response = property_information_collection.insert_one(data)
-    
+    #schema_handler.validate_property_info(data)
+    response2 = property_information_collection.update_one({
+                                                    "property_id": ObjectId(property_id),
+                                                    "user_id":user_id},
+                                                    {"$push":data})
+
     if response == None:
         raise ExceptionFactory("").database_operation_failed()
     
-    return success({"inserted_id": str(response.inserted_id)}) 
+    return success({"modified_count": str(response2.modified_count)}) 
 
 
 @information_bp.route('/information/<string:property_id>', methods=['PUT'])

@@ -167,8 +167,6 @@ class Expense(Property):
         self.expense_schema["net_cash_flow"] = np.ndarray.tolist(np.subtract(net_operating_array, capital_expenditures_array))
     
     
-
-
 def main():
     expense = Expense("dlopezvsr", "6223cf8c40b07aaf6c4f36b1")
     print(expense.execute())
