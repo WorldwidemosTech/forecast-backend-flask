@@ -17,13 +17,14 @@ class Expense(Property):
         self.amount_units = sum(Property.units_info(self)["total_units"])
     
     def execute(self):
-        # TODO: Add to the end
-        """self.property_forecast.update_one({"property_id": self.property_id,
-                                            "user_id":self.user_id},
-                                            {"$push":self.summary_schema_post})"""
+        
         self.output_info()
         self.summary_values()
+        self.property_forecast.update_one({"property_id": self.property_id,
+                                            "user_id":self.user_id},
+                                            {"$push":self.summary_schema_post})
         return  self.summary_schema_post
+
     
     def output_info(self):
         #Information calculated on income module needed to calculate expense concepts

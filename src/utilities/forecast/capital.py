@@ -14,11 +14,11 @@ class Capital(Property):
         self.schema_post = {"capital:": self.capital_schema}
     
     def execute(self):
-        # TODO: Add to the end
-        """self.property_forecast.update_one({"property_id": self.property_id,
-                                            "user_id":self.user_id},
-                                            {"$push":self.schema_post})"""
+        
         self.capital_expenditures()
+        self.property_forecast.update_one({"property_id": self.property_id,
+                                            "user_id":self.user_id},
+                                            {"$push":self.schema_post})
         
         return self.capital_schema()
     

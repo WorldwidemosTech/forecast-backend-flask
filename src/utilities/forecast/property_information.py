@@ -1,5 +1,6 @@
 from src.config.database import property_information_collection
 from src.config.database import  property_forecast_collection
+from bson import ObjectId
 
 class Property():
      #information entered by user in property information initial payload from section called general data in the frontend
@@ -13,7 +14,7 @@ class Property():
 
     def units_base_info(self):
         #information enter by user in property information initial payload from section called units information.
-        document = self.property_info.find_one({"user_id":self.user_id, "property_id":self.property_id})
+        document = self.property_info.find_one({"user_id":self.user_id, "property_id":ObjectId(self.property_id)})
         units_information = document["property_information"]
         return units_information
     
@@ -27,20 +28,20 @@ class Property():
             size = units_information_concept["amount_units"] * units_information_concept["size"]
 
             units_information_totals["total_sqft"].append(size)
-            units_information_totals["actual"].append(actual)
-            units_information_totals["new"].append(new)
-            units_information_totals["vacant"].append(units_information_concept["vacant"])
+            units_information_totals["actual_rent"].append(actual)
+            units_information_totals["new_rent"].append(new)
+            units_information_totals["vacant_units"].append(units_information_concept["vacant"])
             units_information_totals["total_units"].append(units_information_concept["amount_units"])
         return units_information_totals
 
     def expense_input_info(self):
         #information entered by user in property information initial payload from expense section.
-        document = self.property_info.find_one({"user_id":self.user_id, "property_id":self.property_id})
+        document = self.property_info.find_one({"user_id":self.user_id, "property_id":ObjectId(self.property_id)})
         property_expense_information = document["expense"]
         return property_expense_information
 
     def capital_input_info(self):
         #information entered by user in property information initial payload from capital section.
-        document = self.property_info.find_one({"user_id":self.user_id, "property_id":self.property_id})
+        document = self.property_info.find_one({"user_id":self.user_id, "property_id":ObjectId(self.property_id)})
         property_capital_information = document["capital"]
         return property_capital_information

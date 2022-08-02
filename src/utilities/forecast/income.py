@@ -1,6 +1,7 @@
 from src.config.database import property_information_collection
 from src.config.database import property_forecast_collection
 from src.utilities.forecast.property_information import Property
+from bson import ObjectId
 
 class Income(Property):
     
@@ -131,7 +132,7 @@ class Income(Property):
             self.income_schema["total_rental_income"].append(total_sum)
     
     def big_total_income(self):
-        document = self.property_info.find_one({"user_id":self.user_id, "property_id":self.property_id})
+        document = self.property_info.find_one({"user_id":self.user_id, "property_id":ObjectId(self.property_id)})
         self.income_schema["big_total_income"] = []
         income_document = document["income"].values()
         income_entered_by_user = sum([i for i in income_document ])
@@ -144,7 +145,7 @@ class Income(Property):
         
 
 def main():
-    income = Income("dlopezvsr", "6223cf8c40b07aaf6c4f36b1")
+    income = Income("dlopezvsr", "62e851b0c710e7c50f913e14")
     print(income.execute())
 
 if __name__ == "__main__":

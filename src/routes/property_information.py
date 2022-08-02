@@ -37,15 +37,13 @@ def create_information(user_id: str, property_id: str):
     logger.info(f"Response: {response}")
     data = request.json
     #schema_handler.validate_property_info(data)
-    response2 = property_information_collection.update_one({
-                                                    "property_id": ObjectId(property_id),
-                                                    "user_id":user_id},
-                                                    {"$push":data})
+    query = {'user_id': user_id, 'property_id': ObjectId(property_id)}
+    response = property_information_collection.update_one(query, {'$set': data})
 
     if response == None:
         raise ExceptionFactory("").database_operation_failed()
     
-    return success({"modified_count": str(response2.modified_count)}) 
+    return success({"modified_count": str(response.modified_count)}) 
 
 
 @information_bp.route('/information/<string:property_id>', methods=['PUT'])
@@ -56,8 +54,8 @@ def update_information(user_id: str, property_id: str):
     logger.info(f"PropertyId: {property_id}")
 
     data = request.json
-    schema_handler.validate_property_info(data)
-    query = {'user_id': user_id, 'property_id': property_id}
+    #schema_handler.validate_property_info(data)
+    query = {'user_id': user_id, 'property_id': ObjectId(property_id)}
     response = property_information_collection.update_one(query, {'$set': data})
 
     if response.modified_count < 1:

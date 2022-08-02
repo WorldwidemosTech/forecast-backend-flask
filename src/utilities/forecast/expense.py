@@ -14,14 +14,26 @@ class Expense(Property):
         self.expense_schema_post = {"expense": self.expense_schema}
     
     def execute(self):
-        # TODO: Add to the end
-        """self.property_forecast.update_one({"property_id": self.property_id,
-                                            "user_id":self.user_id},
-                                            {"$push":self.expense_schema_post})"""
+        
         self.income_output_info()
         self.management_fee()
         self.advertising()
         self.misc_management_expense()
+        self.total_management_expense()
+        self.employee_insurance()
+        self.payroll_fee()
+        self.payroll_tax()
+        self.worker_compensation()
+        self.property_insurance()
+        self.utility_expense()
+        self.maintenance_expense()   
+        self.total_operating_expenses()   
+        self.et_operating_income_pre_capital() 
+        self.net_cash_flow()
+        self.property_forecast.update_one({"property_id": self.property_id,
+                                            "user_id":self.user_id},
+                                            {"$push":self.expense_schema_post})
+
         return  self.expense_schema_post
     
     def income_output_info(self):
@@ -127,7 +139,7 @@ class Expense(Property):
         self.expense_schema["total_utility_expenses"] = list_of_utilities_sum
         return list_of_utilities_sum
     
-    def maintenance_expense(self):
+    def maintenance_expense(self): 
         # Create a function to calculate the maintenance expense once we divide it by different concepts, in the meantime
         # we will just ask the user for one big total
         maintenance_expenses =  [Property.expense_input_info(self)["maintenance_expense"]] 
