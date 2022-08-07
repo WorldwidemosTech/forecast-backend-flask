@@ -11,16 +11,16 @@ class Capital(Property):
         self.property_info = property_information_collection
         self.property_forecast = property_forecast_collection
         self.capital_schema = {}
-        self.schema_post = {"capital:": self.capital_schema}
+        self.schema_post = {"capital": self.capital_schema}
     
     def execute(self):
         
         self.capital_expenditures()
         self.property_forecast.update_one({"property_id": self.property_id,
                                             "user_id":self.user_id},
-                                            {"$push":self.schema_post})
+                                            {"$set":self.schema_post})
         
-        return self.capital_schema()
+        return self.capital_schema
     
     def capital_expenditures(self):
         capital_expenditures = Property.capital_input_info(self)
@@ -32,7 +32,7 @@ class Capital(Property):
 
 
 def main():
-    capital = Capital("dlopezvsr", "6223cf8c40b07aaf6c4f36b1")
+    capital = Capital("dlopezvsr", "62e851b0c710e7c50f913e14")
     print(capital.execute())
 
 if __name__ == "__main__":

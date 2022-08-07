@@ -116,7 +116,6 @@ class Income(Property):
     def application_fee(self):
         units_information = Property.units_base_info(self)
         self.income_schema["application_fees"] = []
-        self.income_schema["new_leases"]
 
         for month in range(12):
             self.income_schema["application_fees"].append(self.income_schema["new_leases"][month]*2*units_information["application_fee"])
@@ -141,7 +140,7 @@ class Income(Property):
              self.income_schema[income_concepts] = document["income"][income_concepts]
 
         for month in range(12):
-            self.income_schema["big_total_income"].append(self.income_schema["total_rental_income"][month] + income_entered_by_user)
+            self.income_schema["big_total_income"].append(self.income_schema["total_rental_income"][month] + self.income_schema["application_fees"][month] + income_entered_by_user)
         
 
 def main():
