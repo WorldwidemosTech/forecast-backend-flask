@@ -143,9 +143,9 @@ class Income(Property):
             self.income_schema["big_total_income"].append(self.income_schema["total_rental_income"][month] + self.income_schema["application_fees"][month] + income_entered_by_user)
         
 
-def main():
+'''def main():
     income = Income("dlopezvsr", "62e851b0c710e7c50f913e14")
     print(income.execute())
 
 if __name__ == "__main__":
-    main()
+    main()'''

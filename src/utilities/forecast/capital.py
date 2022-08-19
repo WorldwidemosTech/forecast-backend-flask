@@ -31,9 +31,9 @@ class Capital(Property):
         self.capital_schema["capital_expenditures"] = monthly_capital_expenditures
 
 
-def main():
+'''def main():
     capital = Capital("dlopezvsr", "62e851b0c710e7c50f913e14")
     print(capital.execute())
 
 if __name__ == "__main__":
-    main()
+    main()'''

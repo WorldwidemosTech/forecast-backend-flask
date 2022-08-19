@@ -120,7 +120,8 @@ class Expense(Property):
     def payroll_tax(self):
         expense_inputs = Property.expense_input_info(self)
         self.expense_schema["payroll_tax"] =  (self.expense_schema["employees_salary_expense"][0] + self.expense_schema["health_insurance"]) * expense_inputs["payroll_tax_percentage"] 
-        
+
+    #TODO: funtion not used on this phase, the percantage of worker compensation needs to be confirmed.    
     def worker_compensation(self):
         expense_inputs = Property.expense_input_info(self)
         self.expense_schema["worker_compensation"] = round(expense_inputs["workers_compensation_percentage"] * (self.expense_schema["health_insurance"]+self.expense_schema["employees_salary_expense"][0]),1)
@@ -128,12 +129,7 @@ class Expense(Property):
     def other_employee_expenses(self):
         self.expense_schema["other_employee_expenses"] = [sum([self.expense_schema["health_insurance"], 
         self.expense_schema["payroll_fees"], 
-        self.expense_schema["payroll_tax"], 
-        self.expense_schema["worker_compensation"]])]
-        print(self.expense_schema["health_insurance"])
-        print(self.expense_schema["payroll_fees"])
-        print(self.expense_schema["payroll_tax"])
-        print(self.expense_schema["worker_compensation"])
+        self.expense_schema["payroll_tax"]])]
 
     def property_insurance(self):
         expense_inputs = Property.expense_input_info(self)
@@ -190,9 +186,9 @@ class Expense(Property):
         self.expense_schema["net_cash_flow"] = (np.ndarray.tolist(np.subtract(net_operating_array, capital_expenditures_array))[0])
     
     
-def main():
+'''def main():
     expense = Expense("dlopezvsr", "62e851b0c710e7c50f913e14")
     print(expense.execute())
 
 if __name__ == "__main__":
-    main()
+    main()'''
