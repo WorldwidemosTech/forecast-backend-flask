@@ -53,7 +53,7 @@ def create_property(user_id: str):
 
     response = property_general_data_collection.insert_one(data)
     response_forecast_document = property_information_collection.insert_one({
-        "property_id": response.inserted_id, 
+        "property_id": ObjectId(response.inserted_id), 
         "user_id": user_id})
 
     if not response.acknowledged and not response_forecast_document.acknowledged:

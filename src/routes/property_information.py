@@ -8,6 +8,7 @@ from src.config.database import user_info_collection
 from src.utilities.respond import success
 from src.utilities.exceptions.exceptionfactory import ExceptionFactory
 from src.utilities.schemahandler import SchemaHandler
+from src.utilities.embedded_keys import subkeys_processor
 
 information_bp = Blueprint(name="information", import_name=__name__)
 schema_handler = SchemaHandler()
@@ -38,7 +39,8 @@ def create_information(user_id: str, property_id: str):
     data = request.json
     #schema_handler.validate_property_info(data)
     query = {'user_id': user_id, 'property_id': ObjectId(property_id)}
-    response = property_information_collection.update_one(query, {'$set': data})
+
+    response = subkeys_processor(data, query, property_id, user_id)
 
     if response == None:
         raise ExceptionFactory("").database_operation_failed()
