@@ -20,8 +20,9 @@ def get_information(user_id: str, property_id: str):
 
     logger.info(f"UserId: {user_id}")
     logger.info(f"PropertyId: {property_id}")
-    data = property_information_collection.find_one({'property_id': property_id,
+    data = property_information_collection.find_one({'property_id': ObjectId(property_id),
                                                      'user_id': user_id})
+    data['property_id'] = str(data['property_id'])                                            
     logger.info(f"Data: {data}")
     if data == None:
         raise ExceptionFactory("").database_operation_failed() 

@@ -48,6 +48,9 @@ def subkeys_processor(data, query, property_id, user_id):
     if section == 'employee_expense':
         response = property_information_collection.update_one(query, {
             '$set': {"expense.employee_expense": data['employee_expense']}})
+    
+    else:
+        response = property_information_collection.update_one(query, {'$set': data})
             
         return response
 
