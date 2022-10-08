@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from bson.objectid import ObjectId
-from src.config.database import property_general_data_collection
+from src.config.database import property_forecast_collection
 from src.utilities.exceptions.exceptionfactory import ExceptionFactory
 from src.utilities.logging import get_logger
 from src.utilities.respond import success
@@ -17,27 +17,21 @@ schema_handler = SchemaHandler()
 
 
 
-@property_forecast_bp.route('/forecast/<string:property_id>', methods=['POST'])
+@property_forecast_bp.route('/forecast/<string:property_id>', methods=['GET'])
 def get_property(user_id: str, property_id: str):
-
+    
     income = Income(user_id, property_id)
     income.execute()
-
     capital = Capital(user_id, property_id)
     capital.execute()
-
     expense = Expense(user_id, property_id)
     expense.execute()
-
     summary = Summary(user_id, property_id)
     summary.execute()
 
-@property_forecast_bp.route('/forecast', methods=['POST'])
-def create_property(user_id: str):
-    """Creates a property general data."""
-    ...
+    response = property_forecast_collection.find({"user_id": ObjectId(user_id), "property_id":property_id})
+    if not response:
+        raise ExceptionFactory("").resource_not_found()
+    response["_id"] = str(response["_id"])
 
-@property_forecast_bp.route('/forecast/<string:property_id>', methods=['DELETE'])
-def delete_property(user_id: str, property_id: str):
-    """Deletes a property general data."""
-    ...
+    return success(response)
