@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  worker:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+#    env_file:
+#      - ./.env
+    volumes:
+      - ./:/code
+      - "~/.aws:/home/smartcast_docker/.aws"
+    command: flask run
+    ports:
+      - "8000:8000"
+    #networks:
+    #  proxy:
+    #    aliases:
+    #      - smartcast_backend_service
+
+#networks:
+#  proxy:
+#    external: true
+#    name: merama-internal-network
