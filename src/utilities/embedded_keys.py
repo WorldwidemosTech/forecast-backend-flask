@@ -4,6 +4,9 @@ from bson import ObjectId
 
 
 def subkeys_processor(data, query, property_id, user_id):
+    """ This funtion will handle and process every modification applied to the corresponding forecast section
+    without overwriting the information in Mongo """
+
     section = list(data.keys())[0]
     pre_data = property_information_collection.find_one({'property_id': ObjectId(property_id),
                                                      'user_id': user_id})
