@@ -1,6 +1,28 @@
-from src.config.logger import logger
+import json
 from src.config.database import property_information_collection
 from bson import ObjectId
+import pandas as pd
 
-def fromJSON_toXLSX():
-    ...
+
+
+def fromJSON_toXLSX(json_forecast):
+    json_forecast_dict = json.load(json_forecast)
+    # TODO: fix monthly moveouts from forecast brain, it needs to be the same length
+    # TODO: test expense and fix in case arrays do not have the same length
+
+    income = pd.DataFrame(data=json_forecast_dict["income"])
+    capital = pd.DataFrame(data=json_forecast_dict["capital"])
+    # expense = pd.read_json(json_forecast["expense"])
+    summary = pd.DataFrame(data=json_forecast_dict["summary"])
+    
+
+    with pd.ExcelWriter("forecast.xlsx") as document:
+        income.to_excel(document, sheet_name="Income", index=False)
+
+        capital.to_excel(document, sheet_name="Capital", index=False)
+    #     expense.to_excel(document, sheet_name="Expense", index=False)
+        summary.to_excel(document, sheet_name="Summary", index=False)
+
+
+file_json = open("/Users/diegolopez/Documents/PROJECTS/MOSTECH/forecast-backend-flask/src/utilities/test.json")
+fromJSON_toXLSX(file_json)

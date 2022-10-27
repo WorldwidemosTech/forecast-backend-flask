@@ -9,6 +9,8 @@ from src.utilities.forecast.capital import Capital
 from src.utilities.forecast.expense import Expense
 from src.utilities.forecast.income import Income
 from src.utilities.forecast.summary import Summary
+from bson.json_util import dumps
+import json
 
 
 property_forecast_bp = Blueprint(name="property_forecast", import_name=__name__)
@@ -30,9 +32,9 @@ def get_property(user_id: str, property_id: str):
     summary = Summary(user_id, property_id)
     summary.execute()
 
-    response = property_forecast_collection.find({"user_id": ObjectId(user_id), "property_id":property_id})
+    response = property_forecast_collection.find({"user_id": user_id, "property_id":property_id})
+    response = dumps(response)
     if not response:
         raise ExceptionFactory("").resource_not_found()
-    response["_id"] = str(response["_id"])
 
-    return success(response)
+    return success({"body": json.loads(response)})
