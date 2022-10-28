@@ -9,7 +9,7 @@ from src.routes.property_scenario import scenario_bp
 from src.routes.property_forecast import property_forecast_bp
 from src.routes.user import user_bp
 from src.utilities.exceptions.exception import APIException
-from src.utilities.logging import get_logger
+from src.utilities.logging_ import get_logger
 from src.utilities.respond import error
 
 

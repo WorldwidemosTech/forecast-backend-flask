@@ -94,8 +94,8 @@ class Expense(Property):
         sum_management_expenses_time_series = np.ndarray.tolist(
             np.sum(np.array(
                 management_expenses), axis=0))
-
-        self.expense_schema["total_management_expenses"] = sum_management_expenses_time_series
+        self.expense_schema["expense_totals"] = {}
+        self.expense_schema["expense_totals"].update({"total_management_expenses":sum_management_expenses_time_series})
 
 
     def employee_expense(self):
@@ -140,9 +140,11 @@ class Expense(Property):
         #it is a time series with same value for each month
         expense_inputs = Property.expense_input_info(self)
         utility_expenses = expense_inputs["utility_expenses"]
+
         list_of_utilities = []
         for item in utility_expenses:
-            list_of_utilities.append(utility_expenses[item])
+            
+            list_of_utilities.append(int(utility_expenses[item]))
         
         list_of_utilities_sum = [sum(list_of_utilities)]
         self.expense_schema["total_utility_expenses"] = list_of_utilities_sum
@@ -157,16 +159,16 @@ class Expense(Property):
 
     def total_operating_expenses(self):
   
-        management_expense = self.expense_schema["total_management_expenses"]
+        management_expense = self.expense_schema["expense_totals"]["total_management_expenses"]
         utility_expenses = self.utility_expense()
         employee_expenses = self.expense_schema["employees_salary_expense"]
         other_employee_expenses = self.expense_schema["other_employee_expenses"]
         #maintenance expense is a value entered by the user as a total value, in the 2.0 version we can breakdown the concepts
         maintenance_expenses =  [Property.expense_input_info(self)["maintenance_expense"]]
         fixed_expenses = [Property.expense_input_info(self)["realstate_taxes"] + self.expense_schema["property_insurance"]]
-        self.expense_schema["total_operating_expenses"] = []
+        self.expense_schema["expense_totals"].update({"total_operating_expenses":[]})
         for month in range(12):
-            self.expense_schema["total_operating_expenses"].append(round(
+            self.expense_schema["expense_totals"]["total_operating_expenses"].append(round(
                 management_expense[month] + utility_expenses[0] + employee_expenses[0] + 
                 other_employee_expenses[0] + maintenance_expenses[0] + fixed_expenses[0]))
 
@@ -175,15 +177,15 @@ class Expense(Property):
         income_schema = self.income_output_info()
         total_income = income_schema["big_total_income"]
         total_income_array = np.array([total_income])
-        total_operating_expenses_array = np.array([self.expense_schema["total_operating_expenses"]])
+        total_operating_expenses_array = np.array([self.expense_schema["expense_totals"]["total_operating_expenses"]])
 
-        self.expense_schema["net_operating_income_pre_capital"] = np.ndarray.tolist(np.subtract(total_income_array, total_operating_expenses_array))[0]
+        self.expense_schema["expense_totals"].update({"net_operating_income_pre_capital":np.ndarray.tolist(np.subtract(total_income_array, total_operating_expenses_array))[0]})
 
     def net_cash_flow(self):
         capital_expenses = self.capital_output_info()["capital_expenditures"]
-        net_operating_array = np.array([self.expense_schema["net_operating_income_pre_capital"]])
+        net_operating_array = np.array([self.expense_schema["expense_totals"]["net_operating_income_pre_capital"]])
         capital_expenditures_array = np.array([capital_expenses])
-        self.expense_schema["net_cash_flow"] = (np.ndarray.tolist(np.subtract(net_operating_array, capital_expenditures_array))[0])
+        self.expense_schema["expense_totals"].update({"net_cash_flow":(np.ndarray.tolist(np.subtract(net_operating_array, capital_expenditures_array))[0])})
     
     
 '''def main():

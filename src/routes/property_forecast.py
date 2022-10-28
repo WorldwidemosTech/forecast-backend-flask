@@ -2,7 +2,7 @@ from flask import Blueprint, request
 from bson.objectid import ObjectId
 from src.config.database import property_forecast_collection
 from src.utilities.exceptions.exceptionfactory import ExceptionFactory
-from src.utilities.logging import get_logger
+from src.utilities.logging_ import get_logger
 from src.utilities.respond import success
 from src.utilities.schemahandler import SchemaHandler
 from src.utilities.forecast.capital import Capital

@@ -55,7 +55,7 @@ class Income(Property):
         average_monthly_increase_actual = (actual_status_estimated - current_actual_rent)/12
         actual_status_timeseries = actual_status + average_monthly_increase_actual
 
-        self.income_schema["monthly_moveouts"] = [monthly_moveouts]
+        self.income_schema["monthly_moveouts"] = monthly_moveouts
         self.income_schema["actual_status_timeseries_list"] = [round(actual_status_timeseries)]
         for month in range(11):
             self.income_schema["actual_status_timeseries_list"].append(round(self.income_schema["actual_status_timeseries_list"][month]+ average_monthly_increase_actual))
@@ -110,7 +110,7 @@ class Income(Property):
         self.income_schema["new_leases"] = [0]
         
         for month in range(11):
-            new_lease = self.income_schema["vacant_units_list"][month] + self.income_schema["monthly_moveouts"][0] - self.income_schema["vacant_units_list"][month+1]
+            new_lease = self.income_schema["vacant_units_list"][month] + self.income_schema["monthly_moveouts"] - self.income_schema["vacant_units_list"][month+1]
             self.income_schema["new_leases"].append(new_lease)
  
     def application_fee(self):
