@@ -22,7 +22,6 @@ schema_handler = SchemaHandler()
 @property_forecast_bp.route('/forecast/<string:property_id>', methods=['GET'])
 def get_property(user_id: str, property_id: str):
     """Get the forecast with all the time-series values already claculated ."""
-    
     income = Income(user_id, property_id)
     income.execute()
     capital = Capital(user_id, property_id)
