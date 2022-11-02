@@ -34,20 +34,20 @@ class Summary(Property):
         #this function will calculate the per unit and per sqft values of every big total inside 
         #each section (capital, income, expense).
         digits = 2
-        net_cash_flow_per_unit = sum(self.output_info()["expense"]["net_cash_flow"]) / self.amount_units
-        net_cash_flow_per_sqft = sum(self.output_info()["expense"]["net_cash_flow"]) / self.total_unit_sqft
+        net_cash_flow_per_unit = sum(self.output_info()["expense"]["expense_totals"]["net_cash_flow"]) / self.amount_units
+        net_cash_flow_per_sqft = sum(self.output_info()["expense"]["expense_totals"]["net_cash_flow"]) / self.total_unit_sqft
         self.summary_schema["net_cash_flow"] = {"per_unit": round(net_cash_flow_per_unit, digits), "per_sqft":round(net_cash_flow_per_sqft, digits)}
 
-        net_operating_income_per_unit = sum(self.output_info()["expense"]["net_operating_income_pre_capital"]) / self.amount_units
-        net_operating_income_per_sqft = sum(self.output_info()["expense"]["net_operating_income_pre_capital"]) / self.total_unit_sqft
+        net_operating_income_per_unit = sum(self.output_info()["expense"]["expense_totals"]["net_operating_income_pre_capital"]) / self.amount_units
+        net_operating_income_per_sqft = sum(self.output_info()["expense"]["expense_totals"]["net_operating_income_pre_capital"]) / self.total_unit_sqft
         self.summary_schema["net_operating_income_pre_capital"] = {"per_unit": round(net_operating_income_per_unit, digits), "per_sqft":round(net_operating_income_per_sqft, digits)}
         
         capital_expenses_per_unit = sum(self.output_info()["capital"]["capital_expenditures"]) / self.amount_units
         capital_expenses_per_sqft = sum(self.output_info()["capital"]["capital_expenditures"]) / self.total_unit_sqft
         self.summary_schema["capital_expenditures"] = {"per_unit": round(capital_expenses_per_unit, digits), "per_sqft":round(capital_expenses_per_sqft, digits)}
 
-        total_management_expenses_per_unit = sum(self.output_info()["expense"]["total_management_expenses"]) / self.amount_units
-        total_management_expenses_per_sqft = sum(self.output_info()["expense"]["total_management_expenses"]) / self.total_unit_sqft
+        total_management_expenses_per_unit = sum(self.output_info()["expense"]["expense_totals"]["total_management_expenses"]) / self.amount_units
+        total_management_expenses_per_sqft = sum(self.output_info()["expense"]["expense_totals"]["total_management_expenses"]) / self.total_unit_sqft
         self.summary_schema["total_management_expenses"] = {"per_unit": round(total_management_expenses_per_unit, digits), "per_sqft":round(total_management_expenses_per_sqft, digits)}
         
         total_utility_expenses_per_unit = self.output_info()["expense"]["total_utility_expenses"][0] / self.amount_units
@@ -62,8 +62,8 @@ class Summary(Property):
         total_maintenance_expenses_per_sqft = self.output_info()["expense"]["total_maintenance_expenses"][0] / self.total_unit_sqft
         self.summary_schema["total_maintenance_expenses"] = {"per_unit": round(total_maintenance_expenses_per_unit, digits), "per_sqft":round(total_maintenance_expenses_per_sqft, digits)}
         
-        operating_expenses_per_unit = sum(self.output_info()["expense"]["total_operating_expenses"]) / self.amount_units
-        operating_expenses_per_sqft = sum(self.output_info()["expense"]["total_operating_expenses"]) / self.total_unit_sqft
+        operating_expenses_per_unit = sum(self.output_info()["expense"]["expense_totals"]["total_operating_expenses"]) / self.amount_units
+        operating_expenses_per_sqft = sum(self.output_info()["expense"]["expense_totals"]["total_operating_expenses"]) / self.total_unit_sqft
         self.summary_schema["total_operating_expenses"] = {"per_unit": round(operating_expenses_per_unit, digits), "per_sqft":round(operating_expenses_per_sqft, digits)}
 
 
