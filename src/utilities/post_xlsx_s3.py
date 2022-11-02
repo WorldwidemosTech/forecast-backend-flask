@@ -1,5 +1,3 @@
-import json
-import pymongo
 import boto3
 from dotenv import load_dotenv
 
@@ -14,13 +12,10 @@ client = boto3.client(
 )
 
 
-def post_to_s3(document_object):
+def post_to_s3(user, property, document_object, name):
 
     bucket_name="financial-forecast"
+    response = client.upload_file(name, bucket_name, f"{user}/{property}/{document_object}")
 
-    client.put_object(Bucket=bucket_name, Key="diego/zoi-residencial/")
-
-    response = client.upload_file("forecast.xlsx", bucket_name, document_object)
-    
     return response
     

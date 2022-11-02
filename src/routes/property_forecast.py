@@ -1,8 +1,10 @@
 from flask import Blueprint, request
 from bson.objectid import ObjectId
-from src.config.database import property_forecast_collection
+from src.config.database import property_forecast_collection, property_general_data_collection
 from src.utilities.exceptions.exceptionfactory import ExceptionFactory
 from src.utilities.logging_ import get_logger
+from src.utilities.json_toxlsx import fromJSON_toXLSX
+from src.utilities.post_xlsx_s3 import post_to_s3
 from src.utilities.respond import success
 from src.utilities.schemahandler import SchemaHandler
 from src.utilities.forecast.capital import Capital
@@ -31,9 +33,24 @@ def get_property(user_id: str, property_id: str):
     summary = Summary(user_id, property_id)
     summary.execute()
 
-    response = property_forecast_collection.find({"user_id": user_id, "property_id":property_id})
-    response = dumps(response)
+    response = property_forecast_collection.find_one({"user_id": user_id, "property_id":property_id})
+    file_name = str(response.get("_id"))
+
     if not response:
         raise ExceptionFactory("").resource_not_found()
 
-    return success({"body": json.loads(response)})
+    try:
+        json_forecast = response
+        forecast_xlsx_document = fromJSON_toXLSX(json_forecast)
+        post_to_s3(f"{file_name}.xlsx",user_id, property_id, forecast_xlsx_document)
+        
+    except:
+        ...
+    finally:
+        url = f"https://financial-forecast.s3.us-east-2.amazonaws.com/{user_id}/{property_id}/{file_name}"
+
+        query = {'user_id': user_id, 'property_id': ObjectId(property_id)}
+        property_general_data_collection.update_one(query, {
+                '$set': {"forecast_s3_url": url}})
+
+        return success({"body": response})
