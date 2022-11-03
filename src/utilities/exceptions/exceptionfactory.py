@@ -170,3 +170,11 @@ class ExceptionFactory:
             error=Error.DATABASE_OPERATION_FAIL,
             description="No documents updated",
         )
+    
+    def forecast_not_processed(self) -> APIException:
+        return APIException(
+            self.inv_class,
+            http_code=500,
+            error=Error.DATABASE_OPERATION_FAIL,
+            description="Forecast JSON not converted to Excel, document was not generated.",
+        )

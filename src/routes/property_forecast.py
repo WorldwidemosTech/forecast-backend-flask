@@ -24,6 +24,8 @@ schema_handler = SchemaHandler()
 @property_forecast_bp.route('/forecast/<string:property_id>', methods=['GET'])
 def get_property(user_id: str, property_id: str):
     """Get the forecast with all the time-series values already claculated ."""
+    # TODO: add error handling before to execute functions to validate user_id and property_id.
+    
     income = Income(user_id, property_id)
     income.execute()
     capital = Capital(user_id, property_id)
@@ -35,22 +37,21 @@ def get_property(user_id: str, property_id: str):
 
     response = property_forecast_collection.find_one({"user_id": user_id, "property_id":property_id})
     file_name = str(response.get("_id"))
+    url = f"https://financial-forecast.s3.us-east-2.amazonaws.com/{user_id}/{property_id}/{file_name}.xlsx"
 
+    property_general_data_collection.update_one({"_id": ObjectId(property_id), "user_id": user_id},
+                                                        {"$set": {"url_s3_forecast": url}})
     if not response:
         raise ExceptionFactory("").resource_not_found()
 
     try:
         json_forecast = response
         forecast_xlsx_document = fromJSON_toXLSX(json_forecast)
-        post_to_s3(f"{file_name}.xlsx",user_id, property_id, forecast_xlsx_document)
+        posted_document_response = post_to_s3(forecast_xlsx_document,user_id, property_id, file_name)
+        logger.info(f"S3 response: {posted_document_response['HTTPStatusCode']}.")
         
     except:
-        ...
+        raise ExceptionFactory("").forecast_not_processed()
+
     finally:
-        url = f"https://financial-forecast.s3.us-east-2.amazonaws.com/{user_id}/{property_id}/{file_name}"
-
-        query = {'user_id': user_id, 'property_id': ObjectId(property_id)}
-        property_general_data_collection.update_one(query, {
-                '$set': {"forecast_s3_url": url}})
-
-        return success({"body": response})
+        return success({"body": json.loads(dumps(response))})

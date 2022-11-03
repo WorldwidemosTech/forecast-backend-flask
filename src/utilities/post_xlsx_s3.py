@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv('.env')
 
-
+# TODO: change aws keys to env variables
 
 client = boto3.client(
     's3',
@@ -12,10 +12,10 @@ client = boto3.client(
 )
 
 
-def post_to_s3(user, property, document_object, name):
+def post_to_s3(file, user_id, property_id, filename):
 
     bucket_name="financial-forecast"
-    response = client.upload_file(name, bucket_name, f"{user}/{property}/{document_object}")
-
+    response = client.put_object(Bucket=bucket_name, Key=f"{user_id}/{property_id}/{filename}.xlsx", Body=file)
+    
     return response
     
