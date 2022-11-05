@@ -1,14 +1,18 @@
 import boto3
 from dotenv import load_dotenv
+import os
 
 load_dotenv('.env')
 
 # TODO: change aws keys to env variables
 
+SECRET_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+
 client = boto3.client(
     's3',
-    aws_access_key_id='AKIAR4KXHPRAGZI7Z3UJ',
-    aws_secret_access_key="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"
+    aws_access_key_id=SECRET_KEY_ID,
+    aws_secret_access_key=SECRET_ACCESS_KEY
 )
 
 
