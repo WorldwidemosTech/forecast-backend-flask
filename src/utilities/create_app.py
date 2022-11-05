@@ -1,12 +1,13 @@
+import sentry_sdk
 import traceback
-
 from flask import Flask
 from flask_cors import CORS
+from sentry_sdk.integrations.flask import FlaskIntegration
 
+from src.routes.property_forecast import property_forecast_bp
 from src.routes.property_general_data import property_bp
 from src.routes.property_information import information_bp
 from src.routes.property_scenario import scenario_bp
-from src.routes.property_forecast import property_forecast_bp
 from src.routes.user import user_bp
 from src.utilities.exceptions.exception import APIException
 from src.utilities.logging_ import get_logger
@@ -22,6 +23,18 @@ def handle_api_exception(e):
 
 
 def create_app():
+    sentry_sdk.init(
+        dsn="https://3bf304b481544f7eae8edfa0506e64ca@o4504107666964480.ingest.sentry.io/4504107707596801",
+        integrations=[
+            FlaskIntegration(),
+        ],
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0
+    )
+
     app = Flask(__name__)
 
     # Load app error handlers
