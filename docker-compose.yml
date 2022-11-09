@@ -10,7 +10,7 @@ services:
     volumes:
       - ./:/code
       - "~/.aws:/home/smartcast_docker/.aws"
-    command: flask run --host=0.0.0.0 --port=8000
+    command: gunicorn --bind 0.0.0.0:8000 src.app:app
     ports:
       - "8000:8000"
     networks:
@@ -18,7 +18,7 @@ services:
         aliases:
           - smartcast_backend_service
 
-#networks:
-#  proxy:
-#    external: true
-#    name: smartcast-internal-network
+networks:
+  proxy:
+    external: true
+    name: smartcast-internal-network

@@ -7,7 +7,7 @@ ARG runDeps
 
 ENV VERSION=3.10.4 \
     LANG="C.UTF-8" \
-    APP_ROOT="/usr/src/engine" \
+    APP_ROOT="/usr/src" \
     BUNDLE_APP_CONFIG="/usr/src/.vendor/bundle" \
     UNAME=$UNAME \
     PYTHONUNBUFFERED=1
