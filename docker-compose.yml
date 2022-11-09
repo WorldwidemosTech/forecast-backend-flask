@@ -10,7 +10,7 @@ services:
     volumes:
       - ./:/code
       - "~/.aws:/home/smartcast_docker/.aws"
-    command: flask run
+    command: flask run --host=0.0.0.0 --port=8000
     ports:
       - "8000:8000"
     #networks:
@@ -21,4 +21,4 @@ services:
 #networks:
 #  proxy:
 #    external: true
-#    name: merama-internal-network
+#    name: smartcast-internal-network
