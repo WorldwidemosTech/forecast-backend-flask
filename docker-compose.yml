@@ -1,10 +1,10 @@
 version: "3.8"
 
 services:
-  worker:
+  api:
     build:
       context: ./
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
 #    env_file:
 #      - ./.env
     volumes:
@@ -13,10 +13,10 @@ services:
     command: flask run --host=0.0.0.0 --port=8000
     ports:
       - "8000:8000"
-    #networks:
-    #  proxy:
-    #    aliases:
-    #      - smartcast_backend_service
+    networks:
+      proxy:
+        aliases:
+          - smartcast_backend_service
 
 #networks:
 #  proxy:

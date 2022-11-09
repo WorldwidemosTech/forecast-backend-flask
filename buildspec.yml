@@ -29,7 +29,7 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image with $DEFAULT_TAG...
       - docker pull $LATEST_TAG
-      - docker build -f Dockerfile -t $DEFAULT_TAG --cache-from $LATEST_TAG --build-arg PIPY_USERNAME=${PIPY_USERNAME} --build-arg PYPI_PASSWORD=${PYPI_PASSWORD} .
+      - docker build -f Dockerfile -t $DEFAULT_TAG --cache-from $LATEST_TAG .
       - echo tagging the Docker image with $ALTERNATE_TAG...
       - docker tag $DEFAULT_TAG $ALTERNATE_TAG
   post_build:
