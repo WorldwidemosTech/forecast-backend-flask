@@ -1,0 +1,24 @@
+name: smartcast
+region: sfo
+services:
+  - environment_slug: python
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: WorldwidemosTech/forecast-backend-flask
+    instance_count: 1
+    instance_size_slug: professional-xs
+    internal_ports:
+      - 5000
+    name: smartcast-backend
+    run_command: gunicorn --bind 127.0.0.1:5000 src.app:app
+    envs:
+      - key: MONGO_DB_USER
+        scope: RUN_TIME
+        value: smartcast_admin
+      - key: MONGO_DB_PASS
+        scope: RUN_TIME
+        value: mCjTLbC1EHgyJUaq
+      - key: MONGO_DB_NAME
+        scope: RUN_TIME
+        value: financial_forecast

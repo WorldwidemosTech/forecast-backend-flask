@@ -36,6 +36,7 @@ def create_app():
     )
 
     app = Flask(__name__)
+    CORS(app)
 
     # Load app error handlers
     app.register_error_handler(APIException, handle_api_exception)
@@ -46,7 +47,5 @@ def create_app():
     app.register_blueprint(information_bp, url_prefix="/user/<string:user_id>")
     app.register_blueprint(scenario_bp, url_prefix="/user/<string:user_id>")
     app.register_blueprint(property_forecast_bp, url_prefix="/user/<string:user_id>")
-
-    CORS(app)
 
     return app
