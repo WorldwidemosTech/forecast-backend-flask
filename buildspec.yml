@@ -1,0 +1,52 @@
+version: 0.2
+
+env:
+  variables:
+    IMAGE_REPO_NAME: "smartcast_backend"
+    BASE_IMAGE: "python_base:3.9-v2.0.1"
+    IMAGE_DEFINITION_NAME: "backend-service"
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - ENVIRONMENT=${ENVIRONMENT:=production}
+      - DEFAULT_IMAGE_TAG=$(if [ "$ENVIRONMENT" = "staging" ]; then echo "staging"; else echo "latest"; fi)
+      - IMAGE_TAG=${COMMIT_HASH:=$DEFAULT_IMAGE_TAG}
+      - BASE_REPO_URL=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - REPOSITORY_URI=$BASE_REPO_URL/$IMAGE_REPO_NAME
+      - IMAGE_DEFINITION_NAME=${IMAGE_DEFINITION_NAME:=backend-service}
+      - BASE_IMAGE=${BASE_IMAGE:=python_base:3.9-v2.0.1}
+      - BASE_IMAGE_URL=$BASE_REPO_URL/$BASE_IMAGE
+      - DEFAULT_TAG=$REPOSITORY_URI:$DEFAULT_IMAGE_TAG
+      - ALTERNATE_TAG=$REPOSITORY_URI:$IMAGE_TAG
+      - LATEST_TAG=$REPOSITORY_URI:latest
+  build:
+    on-failure: ABORT
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image with $DEFAULT_TAG...
+      - docker pull $LATEST_TAG
+      - docker build -f Dockerfile -t $DEFAULT_TAG --cache-from $LATEST_TAG .
+      - echo tagging the Docker image with $ALTERNATE_TAG...
+      - docker tag $DEFAULT_TAG $ALTERNATE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $DEFAULT_TAG
+      - docker push $ALTERNATE_TAG
+      # - container_id=$(docker create $DEFAULT_TAG)
+      # - docker cp $container_id:/code/report/tests.xml tests.xml
+      - printf '[{"name":"%s","imageUri":"%s"}]' $IMAGE_DEFINITION_NAME $ALTERNATE_TAG > imagedefinitions.json
+artifacts:
+    files:
+      - imagedefinitions.json
+
+# reports:
+#  pytest_reports:
+#    files:
+#      - tests.xml
+#    file-format: JUNITXML
