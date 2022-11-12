@@ -57,7 +57,7 @@ class Expense(Property):
         self.expense_schema["management_expenses"] = {"management_fee" : []}
 
         for month in range(12):
-            self.expense_schema["management_expenses"]["management_fee"].append(round(income_outputs["big_total_income"][month] * expense_inputs["management_fee_percentage"]))
+            self.expense_schema["management_expenses"]["management_fee"].append(round(income_outputs["big_total_income"][month] * (expense_inputs["management_fee_percentage"]/100)))
 
     def advertising(self):
         #unique type value
@@ -111,7 +111,7 @@ class Expense(Property):
     
     def employee_insurance(self):
         expense_inputs = Property.expense_input_info(self)
-        self.expense_schema["health_insurance"] = round(expense_inputs["employee_insurance_percentage"] * self.expense_schema["employees_salary_expense"][0],1)
+        self.expense_schema["health_insurance"] = round((expense_inputs["employee_insurance_percentage"]/100) * self.expense_schema["employees_salary_expense"][0],1)
         
     def payroll_fee(self):
         expense_inputs = Property.expense_input_info(self)
@@ -119,12 +119,12 @@ class Expense(Property):
        
     def payroll_tax(self):
         expense_inputs = Property.expense_input_info(self)
-        self.expense_schema["payroll_tax"] =  (self.expense_schema["employees_salary_expense"][0] + self.expense_schema["health_insurance"]) * expense_inputs["payroll_tax_percentage"] 
+        self.expense_schema["payroll_tax"] =  (self.expense_schema["employees_salary_expense"][0] + self.expense_schema["health_insurance"]) * (expense_inputs["payroll_tax_percentage"]/100) 
 
     #TODO: funtion not used on this phase, the percantage of worker compensation needs to be confirmed.    
     def worker_compensation(self):
         expense_inputs = Property.expense_input_info(self)
-        self.expense_schema["worker_compensation"] = round(expense_inputs["workers_compensation_percentage"] * (self.expense_schema["health_insurance"]+self.expense_schema["employees_salary_expense"][0]),1)
+        self.expense_schema["worker_compensation"] = round((expense_inputs["workers_compensation_percentage"]/100) * (self.expense_schema["health_insurance"]+self.expense_schema["employees_salary_expense"][0]),1)
         
     def other_employee_expenses(self):
         self.expense_schema["other_employee_expenses"] = [sum([self.expense_schema["health_insurance"], 
