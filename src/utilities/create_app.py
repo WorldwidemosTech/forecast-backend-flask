@@ -35,5 +35,5 @@ def create_app():
     app.register_blueprint(property_forecast_bp, url_prefix="/user/<string:user_id>")
 
     CORS(app)
-
+    cors = CORS(app, resources={r"/user/*": {"origins": "*"}})
     return app
