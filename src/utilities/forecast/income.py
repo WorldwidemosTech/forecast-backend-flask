@@ -42,7 +42,8 @@ class Income(Property):
         units_information = Property.units_base_info(self)
         total_rent = Property.units_info(self)
         amount_units = sum(total_rent["total_units"])
-        turnover = units_information["turnover"]
+        turnover = units_information["turnover"]/100
+        # turnover = units_information["turnover"]
         monthly_moveouts = round(amount_units * turnover/12)
         actual_status = (units_information["actual_income"]/(amount_units - sum(total_rent["vacant_units"]))) * amount_units
         current_loss_to_lease = -(sum(total_rent["actual_rent"])-actual_status)
@@ -103,8 +104,8 @@ class Income(Property):
             # Negative values
             vacancy_loss = (self.income_schema["actual_status_timeseries_list"][month]/self.income_schema["occuppied_units_list"][month])*self.income_schema["vacant_units_list"][month]
             self.income_schema["vacancy_loss_list"].append(round(-vacancy_loss))
-            self.income_schema["concessions_list"].append(round(-(self.income_schema["actual_status_timeseries_list"][month] * units_information["concessions"])))
-            self.income_schema["write_offs_list"].append(round(-(self.income_schema["actual_status_timeseries_list"][month] * units_information["write_offs"])))
+            self.income_schema["concessions_list"].append(round(-(self.income_schema["actual_status_timeseries_list"][month] * units_information["concessions"]/100)))
+            self.income_schema["write_offs_list"].append(round(-(self.income_schema["actual_status_timeseries_list"][month] * units_information["write_offs"]/100)))
 
     def new_leases(self):
         self.income_schema["new_leases"] = [0]

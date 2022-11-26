@@ -14,6 +14,7 @@ from src.utilities.forecast.income import Income
 from src.utilities.forecast.summary import Summary
 from bson.json_util import dumps
 import json
+import time
 
 
 property_forecast_bp = Blueprint(name="property_forecast", import_name=__name__)
@@ -22,8 +23,8 @@ schema_handler = SchemaHandler()
 
 
 
-@property_forecast_bp.route('/forecast/<string:property_id>', methods=['GET'])
-def get_property(user_id: str, property_id: str):
+@property_forecast_bp.route('/create_forecast/<string:property_id>', methods=['GET'])
+def get_property_forecast(user_id: str, property_id: str):
     """Get the forecast with all the time-series values already claculated ."""
     # TODO: add error handling before to execute functions to validate user_id and property_id.
     exsistence_validation = property_information_collection.find_one({"property_id": ObjectId(property_id), "user_id": user_id})
@@ -40,7 +41,6 @@ def get_property(user_id: str, property_id: str):
     summary.execute()
 
     response = property_forecast_collection.find_one({"user_id": user_id, "property_id":property_id})
-    
     
     if response == None:
         raise ExceptionFactory("").resource_not_found()
@@ -60,4 +60,15 @@ def get_property(user_id: str, property_id: str):
         raise ExceptionFactory("").forecast_not_processed()
 
     finally:
-        return success({"body": json.loads(dumps(response))})
+        return success()
+
+@property_forecast_bp.route('/get_forecast/<string:property_id>', methods=['GET'])
+def get_forecast(user_id: str, property_id: str):
+    """Get the forecast with all the time-series values already claculated ."""
+
+    response = property_forecast_collection.find_one({"user_id": user_id, "property_id":property_id})
+    
+    if response == None:
+        raise ExceptionFactory("").resource_not_found()
+   
+    return success({"body": json.loads(dumps(response))})

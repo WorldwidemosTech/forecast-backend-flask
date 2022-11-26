@@ -66,6 +66,16 @@ class Summary(Property):
         operating_expenses_per_sqft = sum(self.output_info()["expense"]["expense_totals"]["total_operating_expenses"]) / self.total_unit_sqft
         self.summary_schema["total_operating_expenses"] = {"per_unit": round(operating_expenses_per_unit, digits), "per_sqft":round(operating_expenses_per_sqft, digits)}
 
+        self.summary_schema["big_totals_summary"] = {
+            "expense_big_total": sum(self.output_info()["expense"]["expense_totals"]["total_operating_expenses"]),
+            "income_big_total": sum(self.output_info()["income"]["big_total_income"]),
+            "net_cash_flow": sum(self.output_info()["expense"]["expense_totals"]["net_cash_flow"]),
+            "total_maintenance_expenses":self.output_info()["expense"]["total_maintenance_expenses"][0],
+            "employees_salary_expense":self.output_info()["expense"]["employees_salary_expense"][0],
+            "total_utility_expenses":self.output_info()["expense"]["total_utility_expenses"][0],
+            "total_management_expenses":sum(self.output_info()["expense"]["expense_totals"]["total_management_expenses"]),
+            "capital_expenditures":sum(self.output_info()["capital"]["capital_expenditures"])
+        }
 
 
 

@@ -55,9 +55,9 @@ class Expense(Property):
         expense_inputs = Property.expense_input_info(self)
         income_outputs = self.income_output_info()
         self.expense_schema["management_expenses"] = {"management_fee" : []}
-
+        management_fee_percentage_var = expense_inputs["management_fee_percentage"]/100
         for month in range(12):
-            self.expense_schema["management_expenses"]["management_fee"].append(round(income_outputs["big_total_income"][month] * (expense_inputs["management_fee_percentage"]/100)))
+            self.expense_schema["management_expenses"]["management_fee"].append(round(income_outputs["big_total_income"][month] * management_fee_percentage_var))
 
     def advertising(self):
         #unique type value
@@ -111,20 +111,23 @@ class Expense(Property):
     
     def employee_insurance(self):
         expense_inputs = Property.expense_input_info(self)
-        self.expense_schema["health_insurance"] = round((expense_inputs["employee_insurance_percentage"]/100) * self.expense_schema["employees_salary_expense"][0],1)
-        
+        employee_insurance_percentage_var = expense_inputs["employee_insurance_percentage"]/100
+        self.expense_schema["health_insurance"] = round(employee_insurance_percentage_var * self.expense_schema["employees_salary_expense"][0],1)
+
     def payroll_fee(self):
         expense_inputs = Property.expense_input_info(self)
         self.expense_schema["payroll_fees"] = expense_inputs["payroll_fee_per_employee"] * self.expense_schema["total_number_employees"][0]
        
     def payroll_tax(self):
         expense_inputs = Property.expense_input_info(self)
-        self.expense_schema["payroll_tax"] =  (self.expense_schema["employees_salary_expense"][0] + self.expense_schema["health_insurance"]) * (expense_inputs["payroll_tax_percentage"]/100) 
+        payroll_tax_percentage_var = expense_inputs["payroll_tax_percentage"]/100
+        self.expense_schema["payroll_tax"] =  (self.expense_schema["employees_salary_expense"][0] + self.expense_schema["health_insurance"]) * payroll_tax_percentage_var
 
     #TODO: funtion not used on this phase, the percantage of worker compensation needs to be confirmed.    
     def worker_compensation(self):
         expense_inputs = Property.expense_input_info(self)
-        self.expense_schema["worker_compensation"] = round((expense_inputs["workers_compensation_percentage"]/100) * (self.expense_schema["health_insurance"]+self.expense_schema["employees_salary_expense"][0]),1)
+        workers_compensation_percentage_var = expense_inputs["workers_compensation_percentage"]/100
+        self.expense_schema["worker_compensation"] = round(workers_compensation_percentage_var * (self.expense_schema["health_insurance"]+self.expense_schema["employees_salary_expense"][0]),1)
         
     def other_employee_expenses(self):
         self.expense_schema["other_employee_expenses"] = [sum([self.expense_schema["health_insurance"], 
@@ -188,9 +191,9 @@ class Expense(Property):
         self.expense_schema["expense_totals"].update({"net_cash_flow":(np.ndarray.tolist(np.subtract(net_operating_array, capital_expenditures_array))[0])})
     
     
-'''def main():
-    expense = Expense("dlopezvsr", "62e851b0c710e7c50f913e14")
-    print(expense.execute())
+# def main():
+#     expense = Expense("dlopezvsrtoday", "6377eca3c63e043375513d35")
+#     print(expense.execute())
 
-if __name__ == "__main__":
-    main()'''
+# if __name__ == "__main__":
+#     main()
