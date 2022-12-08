@@ -45,8 +45,11 @@ def create_information(user_id: str, property_id: str):
 
     if response == None:
         raise ExceptionFactory("").database_operation_failed()
+    elif response.modified_count == 0 and response.acknowledged == True:
+        return success({"first_insertion": str(response.acknowledged)})
     
     return success({"modified_count": str(response.modified_count)}) 
+    
 
 
 @information_bp.route('/information/<string:property_id>', methods=['PUT'])
